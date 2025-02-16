@@ -1,13 +1,12 @@
 package dev.mmauro.pandemics2helper
 
 import com.github.ajalt.mordant.input.interactiveSelectList
-import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextColors.cyan
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.terminal.muted
 import dev.mmauro.pandemics2helper.events.DrawCardEvent
 import dev.mmauro.pandemics2helper.events.Event
-import dev.mmauro.pandemics2helper.events.IntensifyEvent
+import dev.mmauro.pandemics2helper.events.EpidemicEvent
 import kotlin.system.exitProcess
 
 val TERMINAL = Terminal()
@@ -61,7 +60,7 @@ private val EVENTS = mapOf<String, (Game) -> List<Event>>(
 )
 
 fun main() {
-    var game = Game(deck = INFECTION_DECK, timeline = emptyList())
+    var game = Game(deck = INFECTION_DECK)
     TERMINAL.println("Numbers of cards in the deck: ${game.deck.size}")
 
     while (true) {
@@ -81,7 +80,7 @@ fun main() {
 
 private fun printDiscards(game: Game): List<Event> {
     TERMINAL.println(cyan("DISCARDS ARE:"))
-    game.discards().sortedBy { it.city.name }.forEach { card ->
+    game.discards.sortedBy { it.city.name }.forEach { card ->
         TERMINAL.println(" - $card")
     }
     TERMINAL.println()
@@ -90,13 +89,13 @@ private fun printDiscards(game: Game): List<Event> {
 }
 
 private fun selectDraw(game: Game): List<Event> {
-    val card = game.deckPartition().first().select("Select drawn card") ?: return emptyList()
+    val card = game.partitionedDeck.first().select("Select drawn card") ?: return emptyList()
     return listOf(DrawCardEvent(card))
 }
 
 private fun epidemic(game: Game): List<Event> {
-    val card = game.deckPartition().last().select("Select drawn bottom card") ?: return emptyList()
-    return listOf(DrawCardEvent(card), IntensifyEvent)
+    val card = game.partitionedDeck.last().select("Select drawn bottom card") ?: return emptyList()
+    return listOf(EpidemicEvent(card))
 }
 
 private fun Set<InfectionCard>.select(text: String): InfectionCard? {
@@ -120,7 +119,7 @@ private fun simulateDraw(game: Game): List<Event> {
     val cards = selection?.toInt()
     if (cards != null) {
         TERMINAL.println(cyan("RUNNING SIMULATION"))
-        game.deckPartition().printDrawProbabilities(cards)
+        game.partitionedDeck.printDrawProbabilities(cards)
         TERMINAL.println()
     }
 

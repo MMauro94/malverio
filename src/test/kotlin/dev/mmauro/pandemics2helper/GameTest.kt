@@ -1,7 +1,7 @@
 package dev.mmauro.pandemics2helper
 
 import dev.mmauro.pandemics2helper.events.DrawCardEvent
-import dev.mmauro.pandemics2helper.events.IntensifyEvent
+import dev.mmauro.pandemics2helper.events.EpidemicEvent
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.tuple
 import io.kotest.datatest.withData
@@ -9,49 +9,46 @@ import io.kotest.matchers.shouldBe
 
 class GameTest : FunSpec({
     val a = InfectionCard(City.WASHINGTON)
-    val b = InfectionCard(City.WASHINGTON)
-    val c = InfectionCard(City.WASHINGTON)
+    val b = InfectionCard(City.ATLANTA)
+    val c = InfectionCard(City.SANTIAGO)
     val d = InfectionCard(City.NEW_YORK)
-    val e = InfectionCard(City.NEW_YORK)
-    val f = InfectionCard(City.NEW_YORK)
-    val g = InfectionCard(City.ATLANTA)
-    val h = InfectionCard(City.CHICAGO)
-    val i = InfectionCard(City.CHICAGO)
+    val e = InfectionCard(City.CHICAGO)
+    val f = InfectionCard(City.ISTANBUL)
+    val g = InfectionCard(City.CAIRO)
+    val h = InfectionCard(City.LAGOS)
+    val i = InfectionCard(City.DENVER)
     val deck = setOf(a, b, c, d, e, f, g, h, i)
 
-    context("discardedSequence()") {
+    context("discarded") {
         withData(
             tuple(
                 emptyList(),
-                listOf(emptyList()),
+                emptyList(),
             ),
             tuple(
-                listOf(IntensifyEvent),
-                listOf(emptyList(), emptyList()),
+                listOf(EpidemicEvent(a)),
+                emptyList(),
             ),
             tuple(
                 listOf(DrawCardEvent(a), DrawCardEvent(b)),
-                listOf(listOf(a, b)),
+                listOf(a, b),
             ),
             tuple(
-                listOf(DrawCardEvent(a), DrawCardEvent(b), IntensifyEvent),
-                listOf(listOf(a, b), emptyList()),
+                listOf(DrawCardEvent(a), DrawCardEvent(b), EpidemicEvent(c)),
+                emptyList(),
             ),
             tuple(
-                listOf(DrawCardEvent(a), DrawCardEvent(b), IntensifyEvent, DrawCardEvent(b)),
-                listOf(listOf(a, b), listOf(b)),
+                listOf(DrawCardEvent(a), DrawCardEvent(b), EpidemicEvent(c), DrawCardEvent(b)),
+                listOf(b),
             ),
         ) { (timeline, expected) ->
-            val game = Game(
-                timeline = timeline,
-                deck = deck,
-            )
+            val game = Game(deck)
 
-            game.discardedSequence().toList() shouldBe expected
+            game.addEvents(timeline).discards shouldBe expected
         }
     }
 
-    context("deckPartitions()") {
+    context("partitionedDeck") {
         withData(
             tuple(
                 emptyList(),
@@ -62,31 +59,23 @@ class GameTest : FunSpec({
                 listOf(setOf(a, b, d, f, h, i)),
             ),
             tuple(
-                listOf(DrawCardEvent(c), DrawCardEvent(g), DrawCardEvent(e), IntensifyEvent),
+                listOf(DrawCardEvent(c), DrawCardEvent(g), EpidemicEvent(e)),
                 listOf(setOf(c, e, g), setOf(a, b, d, f, h, i)),
             ),
             tuple(
-                listOf(DrawCardEvent(c), DrawCardEvent(g), DrawCardEvent(e), IntensifyEvent, DrawCardEvent(e)),
+                listOf(DrawCardEvent(c), DrawCardEvent(g), EpidemicEvent(e), DrawCardEvent(e)),
                 listOf(setOf(c, g), setOf(a, b, d, f, h, i)),
-            ),
-            tuple(
-                listOf(DrawCardEvent(c), DrawCardEvent(g), DrawCardEvent(e), IntensifyEvent, DrawCardEvent(e), IntensifyEvent),
-                listOf(setOf(e), setOf(c, g), setOf(a, b, d, f, h, i)),
             ),
             tuple(
                 listOf(
                     DrawCardEvent(c),
                     DrawCardEvent(g),
-                    DrawCardEvent(e),
-                    IntensifyEvent,
-                    DrawCardEvent(e),
-                    IntensifyEvent,
+                    EpidemicEvent(e),
                     DrawCardEvent(c),
                     DrawCardEvent(g),
                     DrawCardEvent(e),
                     DrawCardEvent(a),
-                    DrawCardEvent(b),
-                    IntensifyEvent,
+                    EpidemicEvent(b),
                 ),
                 listOf(setOf(c, g, e, a, b), setOf(d, f, h, i)),
             ),
@@ -94,29 +83,21 @@ class GameTest : FunSpec({
                 listOf(
                     DrawCardEvent(c),
                     DrawCardEvent(g),
-                    DrawCardEvent(e),
-                    IntensifyEvent,
-                    DrawCardEvent(e),
-                    IntensifyEvent,
+                    EpidemicEvent(e),
                     DrawCardEvent(c),
                     DrawCardEvent(g),
                     DrawCardEvent(e),
                     DrawCardEvent(a),
-                    DrawCardEvent(b),
-                    IntensifyEvent,
+                    EpidemicEvent(b),
                     DrawCardEvent(a),
-                    DrawCardEvent(g),
-                    IntensifyEvent,
+                    EpidemicEvent(i),
                 ),
-                listOf(setOf(a, g), setOf(c, e, b), setOf(d, f, h, i)),
+                listOf(setOf(a, i), setOf(c, g, e, b), setOf(d, f, h)),
             ),
         ) { (timeline, expected) ->
-            val game = Game(
-                timeline = timeline,
-                deck = deck,
-            )
+            val game = Game(deck = deck)
 
-            game.deckPartitions().last() shouldBe expected
+            game.addEvents(timeline).partitionedDeck shouldBe expected
         }
     }
 })

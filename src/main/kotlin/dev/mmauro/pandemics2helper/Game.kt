@@ -2,52 +2,50 @@ package dev.mmauro.pandemics2helper
 
 import dev.mmauro.pandemics2helper.events.DrawCardEvent
 import dev.mmauro.pandemics2helper.events.Event
-import dev.mmauro.pandemics2helper.events.IntensifyEvent
+import dev.mmauro.pandemics2helper.events.EpidemicEvent
 
 data class Game(
-    val timeline: List<Event>,
     val deck: Set<InfectionCard>,
+    val discards: List<InfectionCard> = emptyList(),
+    val partitionedDeck: List<Set<InfectionCard>> = listOf(deck),
 ) {
 
-    fun addEvent(event: Event) = copy(timeline = timeline + event)
+    init {
+        for (partition in partitionedDeck) {
+            require(discards.intersect(partition).isEmpty())
+        }
+        require(deck == (discards + partitionedDeck.flatten()).toSet())
+    }
 
-    fun addEvents(events: List<Event>) = events.fold(this) { prev, it -> prev.addEvent(it) }
-
-    fun discardedSequence(): Sequence<List<InfectionCard>> {
-        return sequence {
-            buildList {
-                for (event in timeline) {
-                    when (event) {
-                        is DrawCardEvent -> add(event.card)
-                        IntensifyEvent -> {
-                            yield(toList())
-                            clear()
-                        }
-                    }
+    fun addEvent(event: Event): Game {
+        return when (event) {
+            is DrawCardEvent -> {
+                require(event.card in partitionedDeck.first()) {
+                    "${event.card} is not in ${partitionedDeck.first()}"
                 }
-                yield(toList())
+                discardCard(event.card)
+            }
+
+            is EpidemicEvent -> {
+                require(event.card in partitionedDeck.last()) {
+                    "${event.card} is not in ${partitionedDeck.last()}"
+                }
+                discardCard(event.card).intensify()
             }
         }
     }
 
-    fun discards() = discardedSequence().last()
+    private fun discardCard(card: InfectionCard) = Game(
+        deck = deck,
+        discards = discards + card,
+        partitionedDeck = partitionedDeck.map { it - card }.filterNot { it.isEmpty() },
+    )
 
-    fun deckPartitions(): Sequence<List<Set<InfectionCard>>> {
-        return sequenceOf(listOf(deck)) + discardedSequence()
-            .map { it.toSet() }
-            .runningFold(listOf(deck)) { previous, discarded ->
-                buildList {
-                    add(discarded)
-                    for (prev in previous) {
-                        val toAdd = prev - discarded
-                        if (toAdd.isNotEmpty()) {
-                            add(prev - discarded)
-                        }
-                    }
-                }
-            }
-            .map { it.drop(1) }
-    }
+    private fun intensify() = Game(
+        deck = deck,
+        discards = emptyList(),
+        partitionedDeck = listOf(discards.toSet()) + partitionedDeck,
+    )
 
-    fun deckPartition() = deckPartitions().last()
+    fun addEvents(events: List<Event>) = events.fold(this) { prev, it -> prev.addEvent(it) }
 }
