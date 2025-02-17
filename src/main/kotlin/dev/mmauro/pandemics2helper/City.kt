@@ -1,5 +1,8 @@
 package dev.mmauro.pandemics2helper
 
+import com.github.ajalt.mordant.rendering.TextColors
+import com.github.ajalt.mordant.rendering.TextStyle
+
 enum class City(val color: CityColor) {
     SAN_FRANCISCO(CityColor.BLUE),
     DENVER(CityColor.BLUE),
@@ -30,9 +33,9 @@ enum class City(val color: CityColor) {
     LAKE_BAIKAL(CityColor.RED),
 }
 
-enum class CityColor {
-    YELLOW,
-    BLUE,
-    BLACK,
-    RED,
+enum class CityColor(val textStyle: TextStyle) {
+    YELLOW(TextColors.black on TextColors.yellow),
+    BLUE(TextColors.white on TextColors.blue),
+    BLACK(TextColors.white on TextColors.black),
+    RED(TextColors.black on TextColors.red),
 }

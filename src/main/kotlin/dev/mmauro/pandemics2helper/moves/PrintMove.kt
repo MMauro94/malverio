@@ -1,15 +1,15 @@
 package dev.mmauro.pandemics2helper.moves
 
-import dev.mmauro.pandemics2helper.Game
+import dev.mmauro.pandemics2helper.Timeline
 
 abstract class PrintMove : Move {
 
-    override fun isAllowed(game: Game) = true
+    override fun isAllowed(timeline: Timeline) = true
 
-    override fun perform(game: Game): Game {
-        print(game)
-        return game
+    override fun perform(timeline: Timeline): Timeline {
+        print(timeline)
+        return timeline
     }
 
-    abstract fun print(game: Game)
+    abstract fun print(timeline: Timeline)
 }

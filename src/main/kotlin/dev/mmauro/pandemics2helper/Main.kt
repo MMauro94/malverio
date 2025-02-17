@@ -9,7 +9,9 @@ import dev.mmauro.pandemics2helper.moves.EpidemicIntensify
 import dev.mmauro.pandemics2helper.moves.Forecast
 import dev.mmauro.pandemics2helper.moves.PrintDiscards
 import dev.mmauro.pandemics2helper.moves.PrintPartitions
+import dev.mmauro.pandemics2helper.moves.PrintTimeline
 import dev.mmauro.pandemics2helper.moves.RemoveInfectionCard
+import dev.mmauro.pandemics2helper.moves.Rollback
 import dev.mmauro.pandemics2helper.moves.SimulateDraw
 import kotlin.system.exitProcess
 
@@ -63,27 +65,29 @@ private val MOVES = listOf(
     Forecast,
     SimulateDraw,
     PrintPartitions,
+    PrintTimeline,
     PrintDiscards,
+    Rollback,
 )
 
 fun main() {
-    var game = Game(deck = INFECTION_DECK)
-    TERMINAL.println("Numbers of cards in the deck: ${game.deck.size}")
+    var timeline = Timeline(Game(deck = INFECTION_DECK))
+    TERMINAL.println("Numbers of cards in the deck: ${INFECTION_DECK.size}")
 
     while (true) {
-        val moves = MOVES.filter { it.isAllowed(game) }
+        val moves = MOVES.filter { it.isAllowed(timeline) }
         val selection = TERMINAL.interactiveSelectList(
             moves.map { it.name },
             title = "Select move",
         ) ?: exit()
 
-        game = moves.single { it.name == selection }.perform(game)
+        timeline = moves.single { it.name == selection }.perform(timeline)
     }
 }
 
 fun Collection<InfectionCard>.select(text: String): InfectionCard? {
     val cards = sortedBy { it.city.name }.withIndex().associateBy { (i, card) ->
-        "${i + 1}: $card"
+        "${i + 1}: ${card.text()}"
     }
 
     val selection = TERMINAL.interactiveSelectList(
@@ -103,4 +107,10 @@ fun printSection(name: String, block: Terminal.() -> Unit) {
     TERMINAL.println(cyan("-- $name --"))
     TERMINAL.block()
     TERMINAL.println()
+}
+
+fun List<InfectionCard>.printAsBulletList() {
+    for (card in this) {
+        TERMINAL.println(card.text())
+    }
 }

@@ -1,12 +1,13 @@
 package dev.mmauro.pandemics2helper.moves
 
-import dev.mmauro.pandemics2helper.Game
+import dev.mmauro.pandemics2helper.Timeline
 
 interface Move {
 
     val name: String
 
-    fun isAllowed(game: Game): Boolean
+    fun isAllowed(timeline: Timeline): Boolean
 
-    fun perform(game: Game): Game
+    fun perform(timeline: Timeline): Timeline
 }
+
