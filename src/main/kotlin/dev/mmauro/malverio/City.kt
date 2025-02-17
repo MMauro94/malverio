@@ -2,7 +2,9 @@ package dev.mmauro.malverio
 
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyle
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class City(val color: CityColor) {
     SAN_FRANCISCO(CityColor.BLUE),
     DENVER(CityColor.BLUE),
@@ -33,6 +35,7 @@ enum class City(val color: CityColor) {
     LAKE_BAIKAL(CityColor.RED),
 }
 
+@Serializable
 enum class CityColor(val textStyle: TextStyle) {
     YELLOW(TextColors.black on TextColors.yellow),
     BLUE(TextColors.white on TextColors.blue),

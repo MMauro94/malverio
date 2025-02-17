@@ -1,116 +1,19 @@
 package dev.mmauro.malverio
 
-import com.github.ajalt.mordant.input.interactiveSelectList
-import com.github.ajalt.mordant.rendering.TextColors.cyan
-import com.github.ajalt.mordant.terminal.Terminal
-import dev.mmauro.malverio.moves.DrawInfectionCard
-import dev.mmauro.malverio.moves.EpidemicInfect
-import dev.mmauro.malverio.moves.EpidemicIntensify
-import dev.mmauro.malverio.moves.Forecast
-import dev.mmauro.malverio.moves.PrintDiscards
-import dev.mmauro.malverio.moves.PrintPartitions
-import dev.mmauro.malverio.moves.PrintTimeline
-import dev.mmauro.malverio.moves.RemoveInfectionCard
-import dev.mmauro.malverio.moves.Rollback
-import dev.mmauro.malverio.moves.SimulateDraw
-import kotlin.system.exitProcess
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.main
+import com.github.ajalt.clikt.core.subcommands
+import dev.mmauro.malverio.commands.LoadGameCommand
+import dev.mmauro.malverio.commands.NewGameCommand
 
-val TERMINAL = Terminal()
+class Main : CliktCommand() {
 
-val INFECTION_DECK = setOf(
-    InfectionCard(City.ATLANTA),
-    InfectionCard(City.BUENO_AIRES),
-    InfectionCard(City.BUENO_AIRES),
-    InfectionCard(City.CAIRO),
-    InfectionCard(City.CAIRO),
-    InfectionCard(City.CAIRO),
-    InfectionCard(City.FRANKFURT),
-    InfectionCard(City.FRANKFURT),
-    InfectionCard(City.ISTANBUL),
-    InfectionCard(City.ISTANBUL),
-    InfectionCard(City.ISTANBUL),
-    InfectionCard(City.JACKSONVILLE),
-    InfectionCard(City.JACKSONVILLE),
-    InfectionCard(City.JACKSONVILLE),
-    InfectionCard(City.LAGOS),
-    InfectionCard(City.LAGOS),
-    InfectionCard(City.LAGOS),
-    InfectionCard(City.LIMA),
-    InfectionCard(City.LONDON),
-    InfectionCard(City.LONDON),
-    InfectionCard(City.LONDON),
-    InfectionCard(City.LOS_ANGELES),
-    InfectionCard(City.NEW_YORK),
-    InfectionCard(City.NEW_YORK),
-    InfectionCard(City.NEW_YORK),
-    InfectionCard(City.PARIS),
-    InfectionCard(City.PARIS),
-    InfectionCard(City.SANTIAGO),
-    InfectionCard(City.SAO_PAULO),
-    InfectionCard(City.SAO_PAULO),
-    InfectionCard(City.SAO_PAULO),
-    InfectionCard(City.TRIPOLI),
-    InfectionCard(City.TRIPOLI),
-    InfectionCard(City.TRIPOLI),
-    InfectionCard(City.WASHINGTON),
-    InfectionCard(City.WASHINGTON),
-    InfectionCard(City.WASHINGTON, setOf(InfectionCard.Mutation.WELL_STOCKED)),
-)
-
-private val MOVES = listOf(
-    DrawInfectionCard,
-    EpidemicInfect,
-    EpidemicIntensify,
-    RemoveInfectionCard,
-    Forecast,
-    SimulateDraw,
-    PrintPartitions,
-    PrintTimeline,
-    PrintDiscards,
-    Rollback,
-)
-
-fun main() {
-    var timeline = Timeline(Game(deck = INFECTION_DECK))
-    TERMINAL.println("Numbers of cards in the deck: ${INFECTION_DECK.size}")
-
-    while (true) {
-        val moves = MOVES.filter { it.isAllowed(timeline) }
-        val selection = TERMINAL.interactiveSelectList(
-            moves.map { it.name },
-            title = "Select move",
-        ) ?: exit()
-
-        timeline = moves.single { it.name == selection }.perform(timeline)
-    }
-}
-
-fun Collection<InfectionCard>.select(text: String): InfectionCard? {
-    val cards = sortedBy { it.city.name }.withIndex().associateBy { (i, card) ->
-        "${i + 1}: ${card.text()}"
+    init {
+        subcommands(NewGameCommand())
+        subcommands(LoadGameCommand())
     }
 
-    val selection = TERMINAL.interactiveSelectList(
-        cards.keys.toList(),
-        title = text,
-    )
-
-    return cards[selection]?.value
+    override fun run() = Unit
 }
 
-private fun exit(): Nothing {
-    TERMINAL.println("Goodbye!")
-    exitProcess(0)
-}
-
-fun printSection(name: String, block: Terminal.() -> Unit) {
-    TERMINAL.println(cyan("-- $name --"))
-    TERMINAL.block()
-    TERMINAL.println()
-}
-
-fun List<InfectionCard>.printAsBulletList() {
-    for (card in this) {
-        TERMINAL.println(card.text())
-    }
-}
+fun main(args: Array<String>) = Main().main(args)

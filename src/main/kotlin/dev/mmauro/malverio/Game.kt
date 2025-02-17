@@ -1,5 +1,8 @@
 package dev.mmauro.malverio
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Game(
     val discards: List<InfectionCard>,
     val partitionedDeck: List<Set<InfectionCard>>,

@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.1.0"
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 group = "dev.mmauro"
@@ -12,9 +13,15 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    implementation("com.github.ajalt.mordant:mordant:3.0.2")
-    implementation("com.github.ajalt.mordant:mordant-coroutines:3.0.2")
-    implementation("com.github.ajalt.mordant:mordant-markdown:3.0.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+
+    val cliktVersion = "5.0.3"
+    implementation("com.github.ajalt.clikt:clikt:$cliktVersion")
+    implementation("com.github.ajalt.clikt:clikt-markdown:$cliktVersion")
+
+    val mordantVersion = "3.0.2"
+    implementation("com.github.ajalt.mordant:mordant:$mordantVersion")
+    implementation("com.github.ajalt.mordant:mordant-markdown:$mordantVersion")
 
     val kotestVersion = "5.9.1"
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")

@@ -1,7 +1,10 @@
 package dev.mmauro.malverio
 
+import kotlinx.serialization.Serializable
+
 private val COMPARATOR = compareBy<InfectionCard> { it.city.name}.thenBy { it.mutations.size }
 
+@Serializable
 class InfectionCard(val city: City, val mutations: Set<Mutation> = emptySet()): Comparable<InfectionCard> {
 
     override fun toString() = buildString {
