@@ -1,18 +1,18 @@
-package dev.mmauro.pandemics2helper
+package dev.mmauro.malverio
 
 import com.github.ajalt.mordant.input.interactiveSelectList
 import com.github.ajalt.mordant.rendering.TextColors.cyan
 import com.github.ajalt.mordant.terminal.Terminal
-import dev.mmauro.pandemics2helper.moves.DrawInfectionCard
-import dev.mmauro.pandemics2helper.moves.EpidemicInfect
-import dev.mmauro.pandemics2helper.moves.EpidemicIntensify
-import dev.mmauro.pandemics2helper.moves.Forecast
-import dev.mmauro.pandemics2helper.moves.PrintDiscards
-import dev.mmauro.pandemics2helper.moves.PrintPartitions
-import dev.mmauro.pandemics2helper.moves.PrintTimeline
-import dev.mmauro.pandemics2helper.moves.RemoveInfectionCard
-import dev.mmauro.pandemics2helper.moves.Rollback
-import dev.mmauro.pandemics2helper.moves.SimulateDraw
+import dev.mmauro.malverio.moves.DrawInfectionCard
+import dev.mmauro.malverio.moves.EpidemicInfect
+import dev.mmauro.malverio.moves.EpidemicIntensify
+import dev.mmauro.malverio.moves.Forecast
+import dev.mmauro.malverio.moves.PrintDiscards
+import dev.mmauro.malverio.moves.PrintPartitions
+import dev.mmauro.malverio.moves.PrintTimeline
+import dev.mmauro.malverio.moves.RemoveInfectionCard
+import dev.mmauro.malverio.moves.Rollback
+import dev.mmauro.malverio.moves.SimulateDraw
 import kotlin.system.exitProcess
 
 val TERMINAL = Terminal()

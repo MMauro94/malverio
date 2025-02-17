@@ -1,4 +1,4 @@
-package dev.mmauro.pandemics2helper
+package dev.mmauro.malverio
 
 data class Game(
     val discards: List<InfectionCard>,

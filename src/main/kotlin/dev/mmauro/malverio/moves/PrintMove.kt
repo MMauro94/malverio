@@ -1,6 +1,6 @@
-package dev.mmauro.pandemics2helper.moves
+package dev.mmauro.malverio.moves
 
-import dev.mmauro.pandemics2helper.Timeline
+import dev.mmauro.malverio.Timeline
 
 abstract class PrintMove : Move {
 

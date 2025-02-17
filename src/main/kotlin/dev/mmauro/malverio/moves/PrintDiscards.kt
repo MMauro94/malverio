@@ -1,8 +1,8 @@
-package dev.mmauro.pandemics2helper.moves
+package dev.mmauro.malverio.moves
 
-import dev.mmauro.pandemics2helper.Timeline
-import dev.mmauro.pandemics2helper.printAsBulletList
-import dev.mmauro.pandemics2helper.printSection
+import dev.mmauro.malverio.Timeline
+import dev.mmauro.malverio.printAsBulletList
+import dev.mmauro.malverio.printSection
 
 object PrintDiscards : PrintMove() {
 

@@ -1,10 +1,10 @@
-package dev.mmauro.pandemics2helper.moves
+package dev.mmauro.malverio.moves
 
 import com.github.ajalt.mordant.input.interactiveSelectList
-import dev.mmauro.pandemics2helper.Game
-import dev.mmauro.pandemics2helper.TERMINAL
-import dev.mmauro.pandemics2helper.Timeline
-import dev.mmauro.pandemics2helper.select
+import dev.mmauro.malverio.Game
+import dev.mmauro.malverio.TERMINAL
+import dev.mmauro.malverio.Timeline
+import dev.mmauro.malverio.select
 
 object Forecast : BaseMove() {
 

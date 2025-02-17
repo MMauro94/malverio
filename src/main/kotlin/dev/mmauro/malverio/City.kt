@@ -1,4 +1,4 @@
-package dev.mmauro.pandemics2helper
+package dev.mmauro.malverio
 
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyle

@@ -1,4 +1,4 @@
-package dev.mmauro.pandemics2helper
+package dev.mmauro.malverio
 
 private val COMPARATOR = compareBy<InfectionCard> { it.city.name}.thenBy { it.mutations.size }
 

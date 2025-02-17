@@ -1,4 +1,4 @@
-package dev.mmauro.pandemics2helper
+package dev.mmauro.malverio
 
 class Timeline(val games: List<Item>) {
     constructor(game: Game) : this(listOf(Item(game, "Game setup")))

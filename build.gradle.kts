@@ -33,7 +33,7 @@ tasks.withType<Jar> {
     manifest {
         attributes(
             mapOf(
-                "Main-Class" to "dev.mmauro.pandemics2helper.MainKt",
+                "Main-Class" to "dev.mmauro.malverio.MainKt",
             )
         )
     }

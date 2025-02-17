@@ -1,13 +1,13 @@
-package dev.mmauro.pandemics2helper.moves
+package dev.mmauro.malverio.moves
 
 import com.github.ajalt.mordant.input.interactiveSelectList
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.terminal.warning
-import dev.mmauro.pandemics2helper.InfectionCard
-import dev.mmauro.pandemics2helper.TERMINAL
-import dev.mmauro.pandemics2helper.Timeline
-import dev.mmauro.pandemics2helper.printAsBulletList
-import dev.mmauro.pandemics2helper.printSection
+import dev.mmauro.malverio.InfectionCard
+import dev.mmauro.malverio.TERMINAL
+import dev.mmauro.malverio.Timeline
+import dev.mmauro.malverio.printAsBulletList
+import dev.mmauro.malverio.printSection
 
 object SimulateDraw : PrintMove() {
     override val name = "Simulate draw"
