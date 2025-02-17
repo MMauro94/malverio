@@ -24,7 +24,7 @@ enum class City(val color: CityColor) {
     LIMA(CityColor.YELLOW),
     SAO_PAULO(CityColor.YELLOW),
     SANTIAGO(CityColor.YELLOW),
-    BUENO_AIRES(CityColor.YELLOW),
+    BUENOS_AIRES(CityColor.YELLOW),
     LAGOS(CityColor.YELLOW),
 
     TRIPOLI(CityColor.BLACK),
