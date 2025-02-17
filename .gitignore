@@ -1,3 +1,6 @@
+infection-deck.json
+games/
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
