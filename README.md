@@ -11,7 +11,7 @@ Here's the program for you!
 > This is still under development as we play along, so it's not complete yet!
 
 > [!WARNING]  
-> By looking through the code, you might encounter spoilers of new mechanic or things that happen later in the game!
+> By looking through the code, you might encounter spoilers, new mechanics or things that happen later in the game!
 
 ## How to use
 
