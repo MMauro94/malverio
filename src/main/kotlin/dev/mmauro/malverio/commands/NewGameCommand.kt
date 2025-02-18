@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.path
+import dev.mmauro.malverio.Deck
 import dev.mmauro.malverio.GameLoop
 import dev.mmauro.malverio.InfectionCard
 import dev.mmauro.malverio.Timeline
@@ -24,7 +25,7 @@ class NewGameCommand : CliktCommand(name = "new") {
     override fun run() {
         savegame.createParentDirectories()
         GameLoop(
-            startTimeline = Timeline(infectionDeck = infectionDeck),
+            startTimeline = Timeline(infectionDeck = Deck(infectionDeck)),
             savegame = savegame,
         ).run()
     }

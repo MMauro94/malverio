@@ -4,76 +4,38 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Game(
-    val discards: List<InfectionCard>,
-    val partitionedDeck: List<Set<InfectionCard>>,
+    val infectionDeck: Deck<InfectionCard>,
     val isDuringEpidemic: Boolean,
 ) {
 
-    constructor(deck: Set<InfectionCard>) : this(
-        discards = emptyList(),
-        partitionedDeck = listOf(deck),
+    constructor(infectionDeck: Deck<InfectionCard>) : this(
+        infectionDeck = infectionDeck,
         isDuringEpidemic = false,
     )
 
-    val deck = (discards + partitionedDeck.flatten()).toSet()
-
-    val undrawnCards = partitionedDeck.flatten().toSet()
-
-    init {
-        for (partition in partitionedDeck) {
-            require(discards.intersect(partition).isEmpty())
-        }
-    }
-
     fun drawCard(card: InfectionCard): Game {
         requireNotInEpidemic()
-        require(card in partitionedDeck.first()) { "$card is not in top of deck (${partitionedDeck.first()})" }
-        return discardCard(card)
+        return copy(infectionDeck = infectionDeck.drawCardFromTop(card))
     }
-
-    private fun discardCard(card: InfectionCard) = Game(
-        discards = discards + card,
-        partitionedDeck = partitionedDeck.removeCards(setOf(card)),
-        isDuringEpidemic = isDuringEpidemic,
-    )
 
     fun infect(card: InfectionCard): Game {
         requireNotInEpidemic()
-        require(card in partitionedDeck.last()) { "$card is not in bottom of deck (${partitionedDeck.last()})" }
-        return discardCard(card).copy(isDuringEpidemic = true)
+        return copy(infectionDeck = infectionDeck.drawCardFromBottom(card), isDuringEpidemic = true)
     }
 
     fun intensify(): Game {
         require(isDuringEpidemic) { "Intensify can only be performed during epidemics" }
-        return Game(
-            discards = emptyList(),
-            partitionedDeck = listOf(discards.toSet()) + partitionedDeck,
-            isDuringEpidemic = false,
-        )
+        return copy(infectionDeck = infectionDeck.shuffleDrawnAndPlaceOnTop(), isDuringEpidemic = false)
     }
 
     fun removeCard(card: InfectionCard): Game {
-        require(card in discards) { "$card is not in discards ($discards)" }
-        return Game(
-            discards = discards - card,
-            partitionedDeck = partitionedDeck,
-            isDuringEpidemic = isDuringEpidemic,
-        )
+        return copy(infectionDeck = infectionDeck.removeCardFromDrawn(card))
     }
 
     fun moveToTopOfDeck(card: InfectionCard): Game {
         requireNotInEpidemic()
-        require(card in discards) { "$card is not in discards ($discards)" }
-        return Game(
-            discards = discards - card,
-            partitionedDeck = listOf(setOf(card)) + partitionedDeck,
-            isDuringEpidemic = isDuringEpidemic,
-        )
+        return copy(infectionDeck = infectionDeck.moveFromDrawnToTopOfDeck(card))
     }
-}
-
-private fun List<Set<InfectionCard>>.removeCards(cards: Set<InfectionCard>): List<Set<InfectionCard>> {
-    return map { it - cards }.filterNot { it.isEmpty() }
 }
 
 private fun Game.requireNotInEpidemic() {

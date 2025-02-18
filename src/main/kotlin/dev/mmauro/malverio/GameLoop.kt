@@ -34,7 +34,7 @@ class GameLoop(
 
     fun run() : Nothing {
         var timeline = startTimeline
-        TERMINAL.println("Numbers of cards in the deck: ${timeline.currentGame.deck.size}")
+        TERMINAL.println("Numbers of cards in the infection deck: ${timeline.currentGame.infectionDeck.size}")
         timeline.save(savegame)
 
         while (true) {

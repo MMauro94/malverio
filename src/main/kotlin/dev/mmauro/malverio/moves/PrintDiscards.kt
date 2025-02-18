@@ -10,7 +10,7 @@ object PrintDiscards : PrintMove() {
 
     override fun print(timeline: Timeline) {
         printSection("DISCARDS") {
-            timeline.currentGame.discards.sorted().printAsBulletList()
+            timeline.currentGame.infectionDeck.drawn.sorted().printAsBulletList()
         }
     }
 }

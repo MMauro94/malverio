@@ -11,7 +11,7 @@ object DrawInfectionCard : BaseMove() {
     override fun isAllowed(game: Game) = !game.isDuringEpidemic
 
     override fun perform(game: Game): Timeline.Item? {
-        val card = game.partitionedDeck.first().select("Select drawn card") ?: return null
+        val card = game.infectionDeck.partitions.first().select("Select drawn card") ?: return null
         return Timeline.Item(game.drawCard(card), "$name ${card.text()}")
     }
 }

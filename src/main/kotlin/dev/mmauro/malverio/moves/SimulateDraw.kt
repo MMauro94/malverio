@@ -23,7 +23,7 @@ object SimulateDraw : PrintMove() {
         if (cards != null) {
             printSection("RUNNING SIMULATION") {
                 warning("Remember that this assumes no epidemics will be drawn!")
-                printDrawProbabilities(timeline.currentGame.partitionedDeck, cards)
+                printDrawProbabilities(timeline.currentGame.infectionDeck.partitions, cards)
             }
         }
     }

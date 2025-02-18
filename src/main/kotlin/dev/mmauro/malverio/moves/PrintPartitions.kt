@@ -10,7 +10,7 @@ object PrintPartitions : PrintMove() {
 
     override fun print(timeline: Timeline) {
         printSection("PARTITIONS") {
-            for (partition in timeline.currentGame.partitionedDeck) {
+            for (partition in timeline.currentGame.infectionDeck.partitions) {
                 println("Next ${partition.size} cards are:")
                 partition.sorted().printAsBulletList()
             }

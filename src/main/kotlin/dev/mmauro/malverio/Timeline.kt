@@ -13,7 +13,7 @@ private val JSON = Json {
 @Serializable
 class Timeline(val games: List<Item>) {
 
-    constructor(infectionDeck: Set<InfectionCard>) : this(
+    constructor(infectionDeck: Deck<InfectionCard>) : this(
         listOf(
             Item(Game(infectionDeck), "Game setup (${infectionDeck.size} infection cards)")
         )

@@ -11,7 +11,7 @@ object RemoveInfectionCard : BaseMove() {
     override fun isAllowed(game: Game) = true
 
     override fun perform(game: Game): Timeline.Item? {
-        val card = game.discards.select("Select card to remove") ?: return null
+        val card = game.infectionDeck.drawn.select("Select card to remove") ?: return null
         return Timeline.Item(game.removeCard(card), "$name ${card.text()}")
     }
 }
