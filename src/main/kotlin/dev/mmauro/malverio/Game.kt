@@ -13,7 +13,7 @@ data class Game(
         isDuringEpidemic = false,
     )
 
-    fun drawCard(card: InfectionCard): Game {
+    fun drawInfectionCard(card: InfectionCard): Game {
         requireNotInEpidemic()
         return copy(infectionDeck = infectionDeck.drawCardFromTop(card))
     }
