@@ -6,8 +6,8 @@ import com.github.ajalt.mordant.terminal.Terminal
 
 val TERMINAL = Terminal()
 
-fun Collection<InfectionCard>.select(text: String): InfectionCard? {
-    val cards = sortedBy { it.city.name }.withIndex().associateBy { (i, card) ->
+fun <C> Collection<C>.select(text: String): C? where C : Card, C : Comparable<C> {
+    val cards = sorted().withIndex().associateBy { (i, card) ->
         "${i + 1}: ${card.text()}"
     }
 
