@@ -27,7 +27,7 @@ fun printSection(name: String, block: Terminal.() -> Unit) {
     TERMINAL.println()
 }
 
-fun List<InfectionCard>.printAsBulletList() {
+fun List<Card>.printAsBulletList() {
     for (card in this) {
         TERMINAL.println(card.text())
     }
