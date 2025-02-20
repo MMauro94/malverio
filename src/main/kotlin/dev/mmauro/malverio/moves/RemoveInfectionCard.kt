@@ -8,7 +8,7 @@ object RemoveInfectionCard : BaseMove() {
 
     override val name = "Remove infection card"
 
-    override fun isAllowed(game: Game) = true
+    override fun isAllowed(game: Game) = game.infectionDeck.drawn.isNotEmpty()
 
     override fun perform(game: Game): Timeline.Item? {
         val card = game.infectionDeck.drawn.select("Select card to remove") ?: return null
