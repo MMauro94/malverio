@@ -7,8 +7,10 @@ import com.github.ajalt.mordant.terminal.Terminal
 val TERMINAL = Terminal()
 
 fun <C> Collection<C>.select(text: String): C? where C : Card, C : Comparable<C> {
-    val cards = sorted().withIndex().associateBy { (i, card) ->
-        "${i + 1}: ${card.text()}"
+    val counts = groupingBy { it.text() }.eachCount()
+    val cards = sorted().associateBy {
+        val txt = it.text()
+        txt + " (${counts[txt]})"
     }
 
     val selection = TERMINAL.interactiveSelectList(
@@ -16,7 +18,7 @@ fun <C> Collection<C>.select(text: String): C? where C : Card, C : Comparable<C>
         title = text,
     )
 
-    return cards[selection]?.value
+    return cards[selection]
 }
 
 fun printSection(name: String, block: Terminal.() -> Unit) {
