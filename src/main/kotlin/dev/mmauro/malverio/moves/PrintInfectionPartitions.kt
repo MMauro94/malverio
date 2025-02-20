@@ -4,12 +4,12 @@ import dev.mmauro.malverio.Timeline
 import dev.mmauro.malverio.printAsBulletList
 import dev.mmauro.malverio.printSection
 
-object PrintPartitions : PrintMove() {
+object PrintInfectionPartitions : PrintMove() {
 
-    override val name = "Print partitions"
+    override val name = "Print infection partitions"
 
     override fun print(timeline: Timeline) {
-        printSection("PARTITIONS") {
+        printSection("INFECTION PARTITIONS") {
             for (partition in timeline.currentGame.infectionDeck.partitions) {
                 println("Next ${partition.size} cards are:")
                 partition.sorted().printAsBulletList()

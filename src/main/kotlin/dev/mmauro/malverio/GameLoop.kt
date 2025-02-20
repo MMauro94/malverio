@@ -6,7 +6,7 @@ import dev.mmauro.malverio.moves.EpidemicInfect
 import dev.mmauro.malverio.moves.EpidemicIntensify
 import dev.mmauro.malverio.moves.Forecast
 import dev.mmauro.malverio.moves.PrintDiscards
-import dev.mmauro.malverio.moves.PrintPartitions
+import dev.mmauro.malverio.moves.PrintInfectionPartitions
 import dev.mmauro.malverio.moves.PrintTimeline
 import dev.mmauro.malverio.moves.RemoveInfectionCard
 import dev.mmauro.malverio.moves.Rollback
@@ -21,7 +21,7 @@ private val MOVES = listOf(
     RemoveInfectionCard,
     Forecast,
     SimulateInfectionDraw,
-    PrintPartitions,
+    PrintInfectionPartitions,
     PrintTimeline,
     PrintDiscards,
     Rollback,
