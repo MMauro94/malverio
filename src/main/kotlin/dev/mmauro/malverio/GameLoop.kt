@@ -10,7 +10,7 @@ import dev.mmauro.malverio.moves.PrintPartitions
 import dev.mmauro.malverio.moves.PrintTimeline
 import dev.mmauro.malverio.moves.RemoveInfectionCard
 import dev.mmauro.malverio.moves.Rollback
-import dev.mmauro.malverio.moves.SimulateDraw
+import dev.mmauro.malverio.moves.SimulateInfectionDraw
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
@@ -20,7 +20,7 @@ private val MOVES = listOf(
     EpidemicIntensify,
     RemoveInfectionCard,
     Forecast,
-    SimulateDraw,
+    SimulateInfectionDraw,
     PrintPartitions,
     PrintTimeline,
     PrintDiscards,

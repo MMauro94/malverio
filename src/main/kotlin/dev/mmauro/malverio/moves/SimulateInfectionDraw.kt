@@ -9,15 +9,15 @@ import dev.mmauro.malverio.Timeline
 import dev.mmauro.malverio.printAsBulletList
 import dev.mmauro.malverio.printSection
 
-object SimulateDraw : PrintMove() {
-    override val name = "Simulate draw"
+object SimulateInfectionDraw : PrintMove() {
+    override val name = "Simulate infection draw"
 
     override fun isAllowed(timeline: Timeline) = DrawInfectionCard.isAllowed(timeline)
 
     override fun print(timeline: Timeline) {
         val selection = TERMINAL.interactiveSelectList(
             listOf("1", "2", "3", "4", "5"),
-            title = "Number of cards to draw",
+            title = "Number of infection cards to draw",
         )
         val cards = selection?.toInt()
         if (cards != null) {
