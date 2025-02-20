@@ -12,6 +12,6 @@ object DrawInfectionCard : BaseMove() {
 
     override fun perform(game: Game): Timeline.Item? {
         val card = game.infectionDeck.partitions.first().select("Select drawn card") ?: return null
-        return Timeline.Item(game.drawInfectionCard(card), "$name ${card.text()}")
+        return game.doAction(card.text()) { drawInfectionCard(card) }
     }
 }

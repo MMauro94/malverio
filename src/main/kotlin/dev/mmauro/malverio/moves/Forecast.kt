@@ -35,6 +35,8 @@ object Forecast : BaseMove() {
             card
         }
         sortedCards.reversed().forEach { nextGame = nextGame.moveToTopOfDeck(it) }
-        return Timeline.Item(nextGame, "$name $selection cards (new order: ${sortedCards.joinToString { it.text() }})")
+        return game.doAction("$selection cards (new order: ${sortedCards.joinToString { it.text() }})") {
+            nextGame
+        }
     }
 }

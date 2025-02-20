@@ -10,6 +10,6 @@ object EpidemicIntensify : BaseMove() {
     override fun isAllowed(game: Game) = game.isDuringEpidemic
 
     override fun perform(game: Game): Timeline.Item {
-        return Timeline.Item(game.intensify(), name)
+        return game.doAction { intensify() }
     }
 }

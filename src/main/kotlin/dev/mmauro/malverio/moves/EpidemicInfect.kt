@@ -12,6 +12,6 @@ object EpidemicInfect : BaseMove() {
 
     override fun perform(game: Game): Timeline.Item? {
         val card = game.infectionDeck.partitions.last().select("Select drawn bottom card") ?: return null
-        return Timeline.Item(game.infect(card), "$name with ${card.text()}")
+        return game.doAction("with ${card.text()}") { infect(card) }
     }
 }

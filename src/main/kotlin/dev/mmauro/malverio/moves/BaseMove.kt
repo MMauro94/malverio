@@ -18,4 +18,8 @@ abstract class BaseMove : Move {
             timeline
         }
     }
+
+    fun Game.doAction(details: String? = null, action: Game.() -> Game) : Timeline.Item {
+        return Timeline.Item(this.action(), description = "$name ${details.orEmpty()}")
+    }
 }
