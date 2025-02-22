@@ -3,9 +3,9 @@ package dev.mmauro.malverio
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Deck<T>(
-    val partitions: List<Set<T>>,
-    val drawn: List<T>,
+data class Deck<C>(
+    val partitions: List<Set<C>>,
+    val drawn: List<C>,
 ) {
 
     init {
@@ -14,31 +14,31 @@ data class Deck<T>(
         }
     }
 
-    val undrawnCards = partitions.flatten().toSet()
-    val deck = drawn.toSet() + undrawnCards
+    val undrawn = partitions.flatten().toSet()
+    val deck = drawn.toSet() + undrawn
     val size = deck.size
 
-    constructor(deck: Set<T>) : this(
+    constructor(deck: Set<C>) : this(
         partitions = listOf(deck),
         drawn = emptyList(),
     )
 
-    fun drawCardFromTop(card: T): Deck<T> {
+    fun drawCardFromTop(card: C): Deck<C> {
         require(card in partitions.first()) { "$card is not in top of deck (${partitions.first()})" }
         return discardCard(card)
     }
 
-    fun drawCardFromBottom(card: T): Deck<T> {
+    fun drawCardFromBottom(card: C): Deck<C> {
         require(card in partitions.last()) { "$card is not in bottom of deck (${partitions.last()})" }
         return discardCard(card)
     }
 
-    private fun discardCard(card: T) = Deck(
+    private fun discardCard(card: C) = Deck(
         drawn = drawn + card,
         partitions = partitions.removeCards(setOf(card)),
     )
 
-    fun shuffleDrawnAndPlaceOnTop(): Deck<T> {
+    fun shuffleDrawnAndPlaceOnTop(): Deck<C> {
         if (drawn.isEmpty()) {
             return this
         }
@@ -48,7 +48,7 @@ data class Deck<T>(
         )
     }
 
-    fun removeCardFromDrawn(card: T): Deck<T> {
+    fun removeCardFromDrawn(card: C): Deck<C> {
         require(card in drawn) { "$card is not in drawn cards ($drawn)" }
         return Deck(
             drawn = drawn - card,
@@ -56,7 +56,7 @@ data class Deck<T>(
         )
     }
 
-    fun moveFromDrawnToTopOfDeck(card: T): Deck<T> {
+    fun moveFromDrawnToTopOfDeck(card: C): Deck<C> {
         require(card in drawn) { "$card is not in drawn cards ($drawn)" }
         return Deck(
             drawn = drawn - card,

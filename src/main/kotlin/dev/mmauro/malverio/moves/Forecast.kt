@@ -17,7 +17,7 @@ object Forecast : BaseMove() {
             listOf("4", "5", "6", "7", "8", "9", "10"),
             title = "Number of cards to forecast",
         )
-        val cardsCount = selection?.toInt()?.coerceAtMost(game.infectionDeck.undrawnCards.size) ?: return null
+        val cardsCount = selection?.toInt()?.coerceAtMost(game.infectionDeck.undrawn.size) ?: return null
 
         var nextGame = game
         val cards = List(cardsCount) {
