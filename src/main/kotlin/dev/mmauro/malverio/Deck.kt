@@ -3,7 +3,7 @@ package dev.mmauro.malverio
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Deck<T>(
+data class Deck<T>(
     val partitions: List<Set<T>>,
     val drawn: List<T>,
 ) {

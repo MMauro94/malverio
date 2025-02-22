@@ -1,26 +1,21 @@
 package dev.mmauro.malverio
 
 import com.github.ajalt.mordant.input.interactiveSelectList
-import dev.mmauro.malverio.moves.DrawInfectionCard
-import dev.mmauro.malverio.moves.EpidemicInfect
-import dev.mmauro.malverio.moves.EpidemicIntensify
-import dev.mmauro.malverio.moves.Forecast
-import dev.mmauro.malverio.moves.PrintDiscards
-import dev.mmauro.malverio.moves.PrintInfectionPartitions
-import dev.mmauro.malverio.moves.PrintTimeline
-import dev.mmauro.malverio.moves.RemoveInfectionCard
-import dev.mmauro.malverio.moves.Rollback
-import dev.mmauro.malverio.moves.SimulateInfectionDraw
+import com.github.ajalt.mordant.rendering.TextColors.cyan
+import dev.mmauro.malverio.moves.*
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
 private val MOVES = listOf(
+    DrawPlayerCard,
     DrawInfectionCard,
     EpidemicInfect,
     EpidemicIntensify,
     RemoveInfectionCard,
     Forecast,
+    NextTurn,
     SimulateInfectionDraw,
+    SimulatePlayerDraw,
     PrintInfectionPartitions,
     PrintTimeline,
     PrintDiscards,
@@ -32,20 +27,26 @@ class GameLoop(
     private val savegame: Path,
 ) {
 
-    fun run() : Nothing {
+    fun run(): Nothing {
         var timeline = startTimeline
         TERMINAL.println("Numbers of cards in the infection deck: ${timeline.currentGame.infectionDeck.size}")
         timeline.save(savegame)
 
         while (true) {
+            TERMINAL.println("Current player turn: ${cyan(timeline.currentGame.turn.currentPlayer)}")
             val moves = MOVES.filter { it.isAllowed(timeline) }
             val selection = TERMINAL.interactiveSelectList(
                 moves.map { it.name },
                 title = "Select move",
             ) ?: exit()
 
+            val lastGame = timeline.currentGame
             timeline = moves.single { it.name == selection }.perform(timeline)
             timeline.save(savegame)
+            if (lastGame !== timeline.currentGame) {
+                TERMINAL.println(timeline.games.last().description)
+            }
+            TERMINAL.println()
         }
     }
 

@@ -41,4 +41,7 @@ enum class CityColor(val textStyle: TextStyle) {
     BLUE(TextColors.white on TextColors.blue),
     BLACK(TextColors.white on TextColors.black),
     RED(TextColors.black on TextColors.red),
+    ;
+
+    fun text() = textStyle(name)
 }

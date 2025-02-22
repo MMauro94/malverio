@@ -10,7 +10,7 @@ object Forecast : BaseMove() {
 
     override val name = "Forecast"
 
-    override fun isAllowed(game: Game) = !game.isDuringEpidemic
+    override fun isAllowed(game: Game) = !game.isDuringEpidemic()
 
     override fun perform(game: Game): Timeline.Item? {
         val selection = TERMINAL.interactiveSelectList(

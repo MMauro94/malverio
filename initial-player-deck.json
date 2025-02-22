@@ -1,0 +1,217 @@
+[
+    {
+        "type": "city",
+        "city": "CAIRO"
+    },
+    {
+        "type": "city",
+        "city": "CAIRO"
+    },
+    {
+        "type": "city",
+        "city": "CAIRO"
+    },
+    {
+        "type": "city",
+        "city": "CAIRO"
+    },
+    {
+        "type": "city",
+        "city": "ISTANBUL"
+    },
+    {
+        "type": "city",
+        "city": "ISTANBUL"
+    },
+    {
+        "type": "city",
+        "city": "ISTANBUL"
+    },
+    {
+        "type": "city",
+        "city": "ISTANBUL"
+    },
+    {
+        "type": "city",
+        "city": "JACKSONVILLE"
+    },
+    {
+        "type": "city",
+        "city": "JACKSONVILLE"
+    },
+    {
+        "type": "city",
+        "city": "JACKSONVILLE"
+    },
+    {
+        "type": "city",
+        "city": "JACKSONVILLE"
+    },
+    {
+        "type": "city",
+        "city": "LAGOS"
+    },
+    {
+        "type": "city",
+        "city": "LAGOS"
+    },
+    {
+        "type": "city",
+        "city": "LAGOS"
+    },
+    {
+        "type": "city",
+        "city": "LAGOS"
+    },
+    {
+        "type": "city",
+        "city": "LONDON"
+    },
+    {
+        "type": "city",
+        "city": "LONDON"
+    },
+    {
+        "type": "city",
+        "city": "LONDON"
+    },
+    {
+        "type": "city",
+        "city": "LONDON"
+    },
+    {
+        "type": "city",
+        "city": "NEW_YORK"
+    },
+    {
+        "type": "city",
+        "city": "NEW_YORK"
+    },
+    {
+        "type": "city",
+        "city": "NEW_YORK"
+    },
+    {
+        "type": "city",
+        "city": "NEW_YORK"
+    },
+    {
+        "type": "city",
+        "city": "SAO_PAULO"
+    },
+    {
+        "type": "city",
+        "city": "SAO_PAULO"
+    },
+    {
+        "type": "city",
+        "city": "SAO_PAULO"
+    },
+    {
+        "type": "city",
+        "city": "SAO_PAULO"
+    },
+    {
+        "type": "city",
+        "city": "TRIPOLI"
+    },
+    {
+        "type": "city",
+        "city": "TRIPOLI"
+    },
+    {
+        "type": "city",
+        "city": "TRIPOLI"
+    },
+    {
+        "type": "city",
+        "city": "TRIPOLI"
+    },
+    {
+        "type": "city",
+        "city": "WASHINGTON"
+    },
+    {
+        "type": "city",
+        "city": "WASHINGTON"
+    },
+    {
+        "type": "city",
+        "city": "WASHINGTON"
+    },
+    {
+        "type": "city",
+        "city": "WASHINGTON"
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 1
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 1
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 1
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 2
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 2
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 2
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 3
+    },
+    {
+        "type": "produce-supplies",
+        "used-system-wide-productions": 0,
+        "total-system-wide-productions": 3
+    },
+    {
+        "type": "epidemic"
+    },
+    {
+        "type": "epidemic"
+    },
+    {
+        "type": "epidemic"
+    },
+    {
+        "type": "epidemic"
+    },
+    {
+        "type": "epidemic"
+    },
+    {
+        "type": "rationed-event",
+        "event": "SET_CHOSEN_EVENT_CARD_HERE"
+    },
+    {
+        "type": "rationed-event",
+        "event": "SET_CHOSEN_EVENT_CARD_HERE"
+    },
+    {
+        "type": "rationed-event",
+        "event": "SET_CHOSEN_EVENT_CARD_HERE"
+    },
+    {
+        "type": "rationed-event",
+        "event": "SET_CHOSEN_EVENT_CARD_HERE"
+    }
+]

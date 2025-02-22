@@ -1,5 +1,6 @@
 package dev.mmauro.malverio.moves
 
+import com.github.ajalt.mordant.rendering.TextColors.cyan
 import dev.mmauro.malverio.Game
 import dev.mmauro.malverio.Timeline
 
@@ -20,6 +21,6 @@ abstract class BaseMove : Move {
     }
 
     fun Game.doAction(details: String? = null, action: Game.() -> Game) : Timeline.Item {
-        return Timeline.Item(this.action(), description = "$name ${details.orEmpty()}")
+        return Timeline.Item(this.action(), description = "${cyan(turn.currentPlayer)}: $name ${details.orEmpty()}")
     }
 }

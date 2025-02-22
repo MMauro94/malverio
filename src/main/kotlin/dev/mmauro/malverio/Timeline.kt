@@ -1,21 +1,19 @@
 package dev.mmauro.malverio
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
-private val JSON = Json {
-    prettyPrint = true
-}
-
 @Serializable
 class Timeline(val games: List<Item>) {
 
-    constructor(infectionDeck: Deck<InfectionCard>) : this(
+    constructor(game: Game) : this(
         listOf(
-            Item(Game(infectionDeck), "Game setup (${infectionDeck.size} infection cards)")
+            Item(
+                game = game,
+                description = "Game setup (${game.playerDeck.size} player cards, ${game.infectionDeck.size} infection cards)"
+            )
         )
     )
 
