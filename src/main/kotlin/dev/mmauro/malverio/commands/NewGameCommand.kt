@@ -73,13 +73,27 @@ class NewGameCommand : CliktCommand(name = "new") {
             4 -> 2
             else -> error("Invalid number of players: ${players.size}")
         }
-        val drawnPlayerCards = Deck(playerDeck.filterNot { it is PlayerCard.EpidemicCard }.toSet())
+        val playerDeckNoEpidemics = Deck(playerDeck.filterNot { it is PlayerCard.EpidemicCard }.toSet())
             .selectAndDraw(n = playerCardsToDraw, text = "player cards setup (step 6)")
-            .drawn
-        val playerDeck = Deck(playerDeck)
-        for (card in drawnPlayerCards) {
-            playerDeck.drawCardFromTop(card)
-        }
+
+        val epidemics = playerDeck.filterIsInstance<PlayerCard.EpidemicCard>()
+        val playerCardsPerPile = playerDeckNoEpidemics.undrawn.size / epidemics.size
+        val remainingPlayerCards = playerDeckNoEpidemics.undrawn.size % epidemics.size
+
+        val playerDeck = Deck(
+            partitions = epidemics.mapIndexed { i, epidemic ->
+                Deck.Partition(
+                    setOf(
+                        Deck.Partition.Data(size = 1, cards = setOf(epidemic)),
+                        Deck.Partition.Data(
+                            size = playerCardsPerPile + if (i < remainingPlayerCards) 1 else 0,
+                            cards = playerDeckNoEpidemics.undrawn,
+                        ),
+                    ),
+                )
+            },
+            drawn = playerDeckNoEpidemics.drawn,
+        )
 
         return Game(players, playerDeck, infectionDeck)
     }

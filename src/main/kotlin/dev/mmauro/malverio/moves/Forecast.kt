@@ -21,7 +21,7 @@ object Forecast : BaseMove() {
 
         var nextGame = game
         val cards = List(cardsCount) {
-            val card = nextGame.infectionDeck.partitions.first()
+            val card = nextGame.infectionDeck.partitions.first().cards
                 .select("Select cards that you found (${it + 1}/$cardsCount):")
                 ?: return null
             nextGame = nextGame.drawInfectionCard(card)

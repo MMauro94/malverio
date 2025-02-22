@@ -26,7 +26,7 @@ fun <C> Deck<C>.selectAndDraw(n: Int, text: String): Deck<C> where C : Card, C :
     var deck = this
     var drawn = 0
     while (drawn < n) {
-        val card = (deck.partitions.first()).select("Select card ${drawn + 1}/$n for $text") ?: continue
+        val card = (deck.partitions.first().cards).select("Select card ${drawn + 1}/$n for $text") ?: continue
         deck = deck.drawCardFromTop(card)
         drawn++
     }

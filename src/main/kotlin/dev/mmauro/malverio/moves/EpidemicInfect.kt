@@ -12,7 +12,7 @@ object EpidemicInfect : BaseMove() {
     override fun isAllowed(game: Game) = game.turn.epidemicStage == Turn.EpidemicStage.INFECT
 
     override fun perform(game: Game): Timeline.Item? {
-        val card = game.infectionDeck.partitions.last().select("Select drawn bottom card") ?: return null
+        val card = game.infectionDeck.partitions.last().cards.select("Select drawn bottom card") ?: return null
         return game.doAction("with ${card.text()}") { infect(card) }
     }
 }

@@ -12,8 +12,8 @@ object PrintInfectionPartitions : PrintMove() {
     override fun print(timeline: Timeline) {
         printSection("INFECTION PARTITIONS") {
             for (partition in timeline.currentGame.infectionDeck.partitions) {
-                println(bold("Next ${partition.size} cards are:"))
-                partition.sorted().printAsBulletList()
+                println(bold("Next ${partition.size} cards are from this pool:"))
+                partition.cards.sorted().printAsBulletList()
             }
         }
     }

@@ -4,12 +4,20 @@ import com.github.ajalt.mordant.input.interactiveSelectList
 import com.github.ajalt.mordant.terminal.Terminal
 import dev.mmauro.malverio.Card
 import dev.mmauro.malverio.Deck
+import dev.mmauro.malverio.JSON
 import dev.mmauro.malverio.TERMINAL
 import dev.mmauro.malverio.Timeline
-import dev.mmauro.malverio.printAsBulletList
 import dev.mmauro.malverio.printSection
+import kotlinx.serialization.json.Json
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 
-abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C: Comparable<C> {
+private val PERCENT_FORMAT = DecimalFormat("##.##%", DecimalFormatSymbols.getInstance(Locale.ROOT))
+
+abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C : Comparable<C> {
 
     protected abstract val cardTypeName: String
 
@@ -25,24 +33,53 @@ abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C: Comp
         val cards = selection?.toInt()
         if (cards != null) {
             printSection("RUNNING SIMULATION") {
-                printDrawProbabilities(getDeck(timeline).partitions, cards)
+                val simulationResults = getDeck(timeline).simulateDrawRandomCards(cards = cards, times = 10_000)
+                printSimulationResults(simulationResults)
             }
         }
     }
 
-    private fun Terminal.printDrawProbabilities(partitions: List<Set<C>>, n: Int) {
-        if (partitions.isEmpty()) {
-            println("RIP, end of deck")
-        } else if (partitions.first().size <= n) {
-            println("For sure, you'll draw these cards:")
-            partitions.first().sorted().printAsBulletList()
-            val remaining = n - partitions.first().size
-            if (remaining > 0) {
-                printDrawProbabilities(partitions.drop(1), remaining)
+    protected abstract fun Terminal.printSimulationResults(results: SimulationResults<C>)
+
+    private fun Deck<C>.simulateDrawRandomCards(cards: Int, times: Int): SimulationResults<C> {
+        return SimulationResults(
+            buildList {
+                repeat(times) {
+                    add(simulateDrawRandomCards(cards))
+                }
+            },
+        )
+    }
+
+    private fun Deck<C>.simulateDrawRandomCards(cards: Int): Set<C> {
+        var deck = this
+        return buildSet {
+            repeat(cards) {
+                val card = deck.partitions.first().cards.random()
+                add(card)
+                deck = deck.drawCardFromTop(card)
             }
-        } else {
-            println("You'll draw $n out of these ${partitions.first().size} cards:")
-            partitions.first().sorted().printAsBulletList()
         }
+    }
+
+    data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
+
+        fun <T> probabilitiesBy(group: (C) -> T): Map<T, Probability> {
+            return simulations
+                .map { it.map(group).toSet() }
+                .flatten()
+                .groupingBy { it }
+                .eachCount()
+                .mapValues { Probability(it.value / simulations.size.toDouble()) }
+        }
+    }
+
+    @JvmInline
+    value class Probability(val value: Double) {
+        init {
+            require(value in 0.0..1.0) { "probability is not in 0-1 range: $value" }
+        }
+
+        fun format() = PERCENT_FORMAT.format(value)
     }
 }

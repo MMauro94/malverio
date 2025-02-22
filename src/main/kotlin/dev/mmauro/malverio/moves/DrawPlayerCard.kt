@@ -11,7 +11,7 @@ object DrawPlayerCard : BaseMove() {
     override fun isAllowed(game: Game) = !game.isDuringEpidemic() && !game.turn.hasDrawnAllPlayerCards()
 
     override fun perform(game: Game): Timeline.Item? {
-        val card = game.playerDeck.partitions.first().select("Select drawn card") ?: return null
+        val card = game.playerDeck.partitions.first().cards.select("Select drawn card") ?: return null
         return game.doAction(card.text()) { drawPlayerCard(card) }
     }
 }
