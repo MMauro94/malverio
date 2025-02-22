@@ -2,7 +2,6 @@ package dev.mmauro.malverio
 
 import com.github.ajalt.mordant.input.interactiveSelectList
 import com.github.ajalt.mordant.rendering.TextColors
-import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.rendering.TextStyles.italic
 import com.github.ajalt.mordant.terminal.Terminal
 
@@ -21,6 +20,17 @@ fun <C> Collection<C>.select(text: String): C? where C : Card, C : Comparable<C>
     )
 
     return cards[selection]
+}
+
+fun <C> Deck<C>.selectAndDraw(n: Int, text: String): Deck<C> where C : Card, C : Comparable<C> {
+    var deck = this
+    var drawn = 0
+    while (drawn < n) {
+        val card = (deck.partitions.first()).select("Select card ${drawn + 1}/$n for $text") ?: continue
+        deck = deck.drawCardFromTop(card)
+        drawn++
+    }
+    return deck
 }
 
 fun printSection(name: String, block: Terminal.() -> Unit) {
