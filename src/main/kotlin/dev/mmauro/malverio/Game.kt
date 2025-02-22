@@ -93,6 +93,10 @@ data class Game(
         )
     }
 
+    fun turnsLeft() : Int {
+        return (playerDeck.undrawn.size + turn.drawnPlayerCards) / DRAWN_PLAYER_CARDS_PER_TURN
+    }
+
     fun isDuringEpidemic() = turn.epidemicStage != null
 }
 
