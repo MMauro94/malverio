@@ -55,7 +55,9 @@ abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C : Com
         var deck = this
         return buildSet {
             repeat(cards) {
-                val card = deck.partitions.first().cards.random()
+                val partition = deck.partitions.first()
+                val data = partition.data.flatMap { d -> List(d.size) { d } }
+                val card = data.random().cards.random()
                 add(card)
                 deck = deck.drawCardFromTop(card)
             }
