@@ -15,7 +15,7 @@ enum class City(val color: CityColor) {
     LONDON(CityColor.BLUE),
     PARIS(CityColor.BLUE),
     FRANKFURT(CityColor.BLUE),
-    SAINT_PETERSBURG(CityColor.BLUE),
+    ST_PETERSBURG(CityColor.BLUE),
 
     LOS_ANGELES(CityColor.YELLOW),
     JACKSONVILLE(CityColor.YELLOW),
