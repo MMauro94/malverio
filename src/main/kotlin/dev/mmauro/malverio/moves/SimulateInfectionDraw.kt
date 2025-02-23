@@ -3,13 +3,7 @@ package dev.mmauro.malverio.moves
 import com.github.ajalt.mordant.terminal.Terminal
 import dev.mmauro.malverio.InfectionCard
 import dev.mmauro.malverio.PlayerCard
-import dev.mmauro.malverio.TERMINAL
 import dev.mmauro.malverio.Timeline
-import dev.mmauro.malverio.moves.AbstractSimulateDrawMove.Probability
-
-private val PROBABILITIES_COMPARATOR = compareByDescending<Map.Entry<InfectionCard, Probability>> {
-    it.value.value
-}.thenBy { it.key }
 
 object SimulateInfectionDraw : AbstractSimulateDrawMove<InfectionCard>() {
 
@@ -30,11 +24,10 @@ object SimulateInfectionDraw : AbstractSimulateDrawMove<InfectionCard>() {
     }
 
     override fun Terminal.printSimulationResults(results: SimulationResults<InfectionCard>) {
-        val probabilities = results.probabilitiesBy { it }
-
-        TERMINAL.println("Probabilities for each card:")
-        probabilities.entries.sortedWith(PROBABILITIES_COMPARATOR).forEach { (card, probability) ->
-            TERMINAL.println(" - ${card.text()}: ${probability.format()}")
-        }
+        println("Probability of infection cards:")
+        results.probabilityTree(
+            { Group(it.city, isRelevant = true) },
+            { Group(it, isRelevant = it.mutations.isNotEmpty()) },
+        ).print(terminal = this)
     }
 }
