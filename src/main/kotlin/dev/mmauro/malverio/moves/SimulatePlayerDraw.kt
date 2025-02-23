@@ -19,6 +19,8 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
 
     override fun getDeck(timeline: Timeline) = timeline.currentGame.playerDeck
 
+    override fun getNumberOfCardsToDraw(timeline: Timeline) = 2
+
     override fun Terminal.printSimulationResults(results: SimulationResults<PlayerCard>) {
         val probabilityByType = results
             .probabilitiesBy { it.toType() }

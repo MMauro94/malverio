@@ -23,16 +23,14 @@ abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C : Com
 
     protected abstract fun getDeck(timeline: Timeline): Deck<C>
 
+    protected abstract fun getNumberOfCardsToDraw(timeline: Timeline): Int?
+
     override val name get() = "Simulate $cardTypeName draw"
 
     override fun print(timeline: Timeline) {
-        val selection = TERMINAL.interactiveSelectList(
-            listOf("1", "2", "3", "4", "5"),
-            title = "Number of $cardTypeName cards to draw",
-        )
-        val cards = selection?.toInt()
+        val cards = getNumberOfCardsToDraw(timeline)
         if (cards != null) {
-            printSection("RUNNING SIMULATION") {
+            printSection("RUNNING SIMULATION FOR $cards CARDS") {
                 val simulationResults = getDeck(timeline).simulateDrawRandomCards(cards = cards, times = 10_000)
                 printSimulationResults(simulationResults)
             }
