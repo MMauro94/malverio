@@ -42,7 +42,7 @@ enum class City(val color: CityColor) : Textable {
 enum class CityColor(val textStyle: TextStyle) : Textable {
     YELLOW(TextColors.black on TextColors.yellow),
     BLUE(TextColors.white on TextColors.blue),
-    BLACK(TextColors.white on TextColors.black),
+    BLACK(TextColors.black on TextColors.white),
     RED(TextColors.black on TextColors.red),
     ;
 
