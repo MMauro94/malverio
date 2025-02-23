@@ -31,16 +31,13 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
                 when (it) {
                     is CityCard -> Group(it.city, isRelevant = true)
                     is EventCard -> Group(it, isRelevant = true)
-                    is EpidemicCard -> null
-                    is ProduceSuppliesCard -> null
+                    else -> null
                 }
             },
             {
                 when (it) {
                     is CityCard -> Group(it, isRelevant = it.unsearched > 0 || it.improvement != null)
-                    is EventCard -> null
-                    is EpidemicCard -> null
-                    is ProduceSuppliesCard -> null
+                    else -> null
                 }
             },
         ).print(terminal = this)
@@ -62,6 +59,10 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
         data class City(val color: CityColor) : CardType {
             override fun text() = color.text()
         }
+
+        data object PortableAntiviralLab : CardType {
+            override fun text() = "Portable antiviral lab"
+        }
     }
 
     private fun PlayerCard.toType() = when (this) {
@@ -70,5 +71,6 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
         is EventCard.RationedEventCard -> CardType.Event
         is EventCard.UnrationedEventCard -> CardType.Event
         is ProduceSuppliesCard -> CardType.Produce
+        is PlayerCard.PortableAntiviralLabCard -> CardType.PortableAntiviralLab
     }
 }

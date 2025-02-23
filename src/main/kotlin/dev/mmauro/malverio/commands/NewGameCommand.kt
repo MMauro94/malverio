@@ -47,9 +47,13 @@ class NewGameCommand : CliktCommand(name = "new") {
                 .countAndList(),
             "produce supplies cards" to playerDeck.filterIsInstance<ProduceSuppliesCard>()
                 .countAndGroup { it.productions() },
+            "portable antiviral labs" to playerDeck
+                .count { it is PlayerCard.PortableAntiviralLabCard }.takeIf { it > 0 }
         )
         for ((name, value) in counts) {
-            TERMINAL.println(" - $name: $value")
+            if (value != null) {
+                TERMINAL.println(" - $name: $value")
+            }
         }
 
         val game = setup()

@@ -11,7 +11,8 @@ private val COMPARATOR = compareBy<PlayerCard> {
         is PlayerCard.EventCard.RationedEventCard -> 2
         is PlayerCard.EventCard.UnrationedEventCard -> 3
         is PlayerCard.ProduceSuppliesCard -> 4
-        is PlayerCard.EpidemicCard -> 5
+        is PlayerCard.PortableAntiviralLabCard -> 5
+        is PlayerCard.EpidemicCard -> 6
     }
 }
 
@@ -72,6 +73,14 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
     }
 
     @Serializable
+    @SerialName("portable-antiviral-lab")
+    data class PortableAntiviralLabCard(
+        override val id: Uuid = Uuid.random(),
+    ): PlayerCard() {
+        override fun text() = "Portable antiviral lab"
+    }
+
+    @Serializable
     @SerialName("city")
     data class CityCard(
         override val id: Uuid = Uuid.random(),
@@ -102,9 +111,12 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
         override fun text() = city.color.textStyle(toString())
 
         @Serializable
-        enum class Improvement(val description: String) {
-            FOUNDATIONS("Counts as 2 cards for building supply center"),
-            INFRASTRUCTURE("Counts as 3 cards for building supply center"),
+        enum class Improvement {
+            FOUNDATIONS,
+            INFRASTRUCTURE,
+            COMPANION_ENGINEER,
+            COMPANION_LOGISTICS_EXPERT,
+            COMPANION_MESSENGER,
         }
     }
 }
