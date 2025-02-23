@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
 val JSON = Json {
     prettyPrint = true
     namingStrategy = JsonNamingStrategy.KebabCase
+    encodeDefaults = true
 }
 
 class Main : CliktCommand() {

@@ -2,6 +2,8 @@ package dev.mmauro.malverio
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 private val COMPARATOR = compareBy<PlayerCard> {
     when (it) {
@@ -14,19 +16,23 @@ private val COMPARATOR = compareBy<PlayerCard> {
 }
 
 @Serializable
+@OptIn(ExperimentalUuidApi::class)
 sealed class PlayerCard : Card, Comparable<PlayerCard> {
 
     override fun compareTo(other: PlayerCard) = COMPARATOR.compare(this, other)
 
     @Serializable
     @SerialName("epidemic")
-    class EpidemicCard : PlayerCard() {
+    data class EpidemicCard(
+        override val id: Uuid = Uuid.random(),
+    ) : PlayerCard() {
         override fun text() = "EPIDEMIC ☢️"
     }
 
     @Serializable
     @SerialName("produce-supplies")
-    class ProduceSuppliesCard(
+    data class ProduceSuppliesCard(
+        override val id: Uuid = Uuid.random(),
         val usedSystemWideProductions: Int,
         val totalSystemWideProductions: Int,
     ) : PlayerCard() {
@@ -48,20 +54,27 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
 
         @Serializable
         @SerialName("rationed-event")
-        class RationedEventCard(val event: RationedEvent) : EventCard() {
+        data class RationedEventCard(
+            override val id: Uuid = Uuid.random(),
+            val event: RationedEvent,
+        ) : EventCard() {
             override fun text() = "Rationed event (${event.name})"
         }
 
         @Serializable
         @SerialName("unrationed-event")
-        class UnrationedEventCard(val event: UnrationedEvent) : EventCard() {
+        data class UnrationedEventCard(
+            override val id: Uuid = Uuid.random(),
+            val event: UnrationedEvent,
+        ) : EventCard() {
             override fun text() = "Unrationed event (${event.name})"
         }
     }
 
     @Serializable
     @SerialName("city")
-    class CityCard(
+    data class CityCard(
+        override val id: Uuid = Uuid.random(),
         val city: City,
         /**
          * The number of not scratched off search slots in this card
