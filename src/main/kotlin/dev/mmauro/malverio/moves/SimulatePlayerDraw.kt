@@ -13,7 +13,7 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
     }.thenBy { it.key.toString() }
 
 
-    override fun isAllowed(timeline: Timeline) = DrawPlayerCard.isAllowed(timeline)
+    override fun isAllowed(timeline: Timeline) = !timeline.currentGame.isDuringEpidemic()
 
     override val cardTypeName = "player"
 

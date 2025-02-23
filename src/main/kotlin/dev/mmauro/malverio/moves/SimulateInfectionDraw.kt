@@ -12,7 +12,7 @@ private val PROBABILITIES_COMPARATOR = compareByDescending<Map.Entry<InfectionCa
 
 object SimulateInfectionDraw : AbstractSimulateDrawMove<InfectionCard>() {
 
-    override fun isAllowed(timeline: Timeline) = DrawInfectionCard.isAllowed(timeline)
+    override fun isAllowed(timeline: Timeline) = !timeline.currentGame.isDuringEpidemic()
 
     override val cardTypeName = "infection"
 
