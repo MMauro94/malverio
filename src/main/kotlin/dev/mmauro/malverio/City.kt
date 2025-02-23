@@ -5,7 +5,7 @@ import com.github.ajalt.mordant.rendering.TextStyle
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class City(val color: CityColor) {
+enum class City(val color: CityColor) : Textable {
     SAN_FRANCISCO(CityColor.BLUE),
     DENVER(CityColor.BLUE),
     CHICAGO(CityColor.BLUE),
@@ -33,15 +33,18 @@ enum class City(val color: CityColor) {
     MOSCOW(CityColor.BLACK),
 
     LAKE_BAIKAL(CityColor.RED),
+    ;
+
+    override fun text() = color.textStyle(name)
 }
 
 @Serializable
-enum class CityColor(val textStyle: TextStyle) {
+enum class CityColor(val textStyle: TextStyle) : Textable {
     YELLOW(TextColors.black on TextColors.yellow),
     BLUE(TextColors.white on TextColors.blue),
     BLACK(TextColors.white on TextColors.black),
     RED(TextColors.black on TextColors.red),
     ;
 
-    fun text() = textStyle(name)
+    override fun text() = textStyle(name)
 }
