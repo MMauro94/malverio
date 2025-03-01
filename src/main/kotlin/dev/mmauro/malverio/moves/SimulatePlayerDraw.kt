@@ -1,21 +1,18 @@
 package dev.mmauro.malverio.moves
 
 import com.github.ajalt.mordant.terminal.Terminal
-import dev.mmauro.malverio.City
 import dev.mmauro.malverio.CityColor
 import dev.mmauro.malverio.PlayerCard
 import dev.mmauro.malverio.PlayerCard.CityCard
 import dev.mmauro.malverio.PlayerCard.EpidemicCard
 import dev.mmauro.malverio.PlayerCard.EventCard
 import dev.mmauro.malverio.PlayerCard.ProduceSuppliesCard
-import dev.mmauro.malverio.TERMINAL
 import dev.mmauro.malverio.Textable
 import dev.mmauro.malverio.Timeline
-import dev.mmauro.malverio.moves.SimulateInfectionDraw.print
 
 object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
 
-    override fun isAllowed(timeline: Timeline) = !timeline.currentGame.isDuringEpidemic()
+    override fun isAllowedMove(timeline: Timeline) = !timeline.currentGame.isDuringEpidemic()
 
     override val cardTypeName = "player"
 

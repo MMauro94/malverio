@@ -9,6 +9,7 @@ import kotlin.system.exitProcess
 private val MOVES = listOf(
     DrawPlayerCard,
     DrawInfectionCard,
+    EpidemicIncrease,
     EpidemicInfect,
     EpidemicIntensify,
     RemoveInfectionCard,
@@ -16,6 +17,7 @@ private val MOVES = listOf(
     NextTurn,
     SimulateInfectionDraw,
     SimulatePlayerDraw,
+    ShuffleInfectionDeck,
     PrintInfectionPartitions,
     PrintTimeline,
     PrintDiscards,

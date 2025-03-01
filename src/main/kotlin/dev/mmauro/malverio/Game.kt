@@ -8,12 +8,14 @@ const val DRAWN_PLAYER_CARDS_PER_TURN = 2
 data class Game(
     val playerDeck: Deck<PlayerCard>,
     val infectionDeck: Deck<InfectionCard>,
+    val infectionMarker: InfectionMarker,
     val turn: Turn,
 ) {
 
     constructor(players: List<String>, playerDeck: Deck<PlayerCard>, infectionDeck: Deck<InfectionCard>) : this(
         playerDeck = playerDeck,
         infectionDeck = infectionDeck,
+        infectionMarker = InfectionMarker(),
         turn = Turn(
             players = players,
             turnNumber = 0,
@@ -33,7 +35,7 @@ data class Game(
             turn = turn.copy(
                 drawnPlayerCards = turn.drawnPlayerCards + 1,
                 epidemicStage = when (card) {
-                    is PlayerCard.EpidemicCard -> Turn.EpidemicStage.INFECT
+                    is PlayerCard.EpidemicCard -> Turn.EpidemicStage.INCREASE
                     else -> null
                 },
             )
@@ -50,9 +52,19 @@ data class Game(
         )
     }
 
+    fun increase(): Game {
+        require(turn.epidemicStage == Turn.EpidemicStage.INCREASE) {
+            "Infect cannot be performed before drawing an epidemic card"
+        }
+        return copy(
+            infectionMarker = infectionMarker.advance(),
+            turn = turn.copy(epidemicStage = Turn.EpidemicStage.INFECT)
+        )
+    }
+
     fun infect(card: InfectionCard): Game {
         require(turn.epidemicStage == Turn.EpidemicStage.INFECT) {
-            "Infect cannot be performed before drawing an epidemic card"
+            "Intensify can only be performed after increase step"
         }
         return copy(
             infectionDeck = infectionDeck.drawCardFromBottom(card),
@@ -67,6 +79,16 @@ data class Game(
         return copy(
             infectionDeck = infectionDeck.shuffleDrawnAndPlaceOnTop(),
             turn = turn.copy(epidemicStage = null),
+        )
+    }
+
+    fun shuffleInfectionDeck(): Game {
+        require(infectionDeck.undrawn.isEmpty()) {
+            "Shuffle infection deck can only be performed when the infection deck is over"
+        }
+        return copy(
+            infectionDeck = infectionDeck.shuffleDrawnAndPlaceOnTop(),
+            infectionMarker = infectionMarker.advance(),
         )
     }
 
@@ -93,7 +115,7 @@ data class Game(
         )
     }
 
-    fun turnsLeft() : Int {
+    fun turnsLeft(): Int {
         return (playerDeck.undrawn.size + turn.drawnPlayerCards) / DRAWN_PLAYER_CARDS_PER_TURN
     }
 

@@ -35,7 +35,7 @@ object Forecast : BaseMove() {
             card
         }
         sortedCards.reversed().forEach { nextGame = nextGame.moveToTopOfDeck(it) }
-        return game.doAction("$selection cards (new order: ${sortedCards.joinToString { it.text() }})") {
+        return game.doAction("$cardsCount cards (new order: ${sortedCards.joinToString { it.text() }})") {
             nextGame
         }
     }

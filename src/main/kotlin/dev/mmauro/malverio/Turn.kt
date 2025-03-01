@@ -26,6 +26,6 @@ data class Turn(
     fun hasDrawnAllPlayerCards() = drawnPlayerCards == DRAWN_PLAYER_CARDS_PER_TURN
 
     enum class EpidemicStage {
-        INFECT, INTENSIFY
+        INCREASE, INFECT, INTENSIFY
     }
 }
