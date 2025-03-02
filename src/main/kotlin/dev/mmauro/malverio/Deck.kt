@@ -26,6 +26,14 @@ data class Deck<C : Card>(
         drawn = emptyList(),
     )
 
+    fun randomCardFromTop() : C {
+        return partitions.first().randomCard()
+    }
+
+    fun randomCardFromBottom() : C {
+        return partitions.last().randomCard()
+    }
+
     fun drawCardFromTop(card: C): Deck<C> {
         require(card in partitions.first()) { "$card is not in top of deck (${partitions.first()})" }
         return Deck(
@@ -88,6 +96,11 @@ data class Deck<C : Card>(
         }
 
         operator fun contains(card: C) = card in cards
+
+        fun randomCard(): C {
+            val data = data.flatMap { d -> List(d.size) { d } }
+            return data.random().cards.random()
+        }
 
         fun drawCard(card: C): Partition<C>? {
             require(card in this) { "cannot draw card $card from this partition" }

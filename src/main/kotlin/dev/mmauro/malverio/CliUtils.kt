@@ -1,5 +1,6 @@
 package dev.mmauro.malverio
 
+import com.github.ajalt.mordant.input.interactiveMultiSelectList
 import com.github.ajalt.mordant.input.interactiveSelectList
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyles.italic
@@ -7,28 +8,51 @@ import com.github.ajalt.mordant.terminal.Terminal
 
 val TERMINAL = Terminal()
 
-fun <C> Collection<C>.select(text: String): C? where C : Card, C : Comparable<C> {
+private fun <C> Collection<C>.prepareMapForSelection(): Map<String, C> where C : Textable, C : Comparable<C> {
     val counts = groupingBy { it.text() }.eachCount()
-    val cards = sorted().associateBy {
+    return sorted().associateBy {
         val txt = it.text()
-        txt + " (${counts[txt]})"
+        val count = counts[txt]
+        if (count == 1) txt
+        else "$txt (x$count)"
     }
+}
+
+fun <C> Collection<C>.select(text: String): C? where C : Textable, C : Comparable<C> {
+    val items = prepareMapForSelection()
 
     val selection = TERMINAL.interactiveSelectList(
-        cards.keys.toList(),
+        items.keys.toList(),
         title = text,
     )
 
-    return cards[selection]
+    return items[selection]
 }
 
-fun <C> Deck<C>.selectAndDraw(n: Int, text: String): Deck<C> where C : Card, C : Comparable<C> {
+fun <C> Collection<C>.selectMultiple(text: String): Set<C>? where C : Textable, C : Comparable<C> {
+    val items = prepareMapForSelection()
+
+    val selection = TERMINAL.interactiveMultiSelectList(
+        items.keys.toList(),
+        title = text,
+    )
+
+    return selection?.map { items.getValue(it) }?.toSet()
+}
+
+fun <C> Deck<C>.selectAndDraw(
+    n: Int,
+    text: String,
+    ignore: (C) -> Boolean = { false },
+): Deck<C> where C : Card, C : Comparable<C> {
     var deck = this
     var drawn = 0
-    while (drawn < n) {
+    while (drawn < n && deck.undrawn.isNotEmpty()) {
         val card = (deck.partitions.first().cards).select("Select card ${drawn + 1}/$n for $text") ?: continue
         deck = deck.drawCardFromTop(card)
-        drawn++
+        if (!ignore(card)) {
+            drawn++
+        }
     }
     return deck
 }

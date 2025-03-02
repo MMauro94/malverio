@@ -2,6 +2,7 @@ package dev.mmauro.malverio.moves
 
 import com.github.ajalt.mordant.terminal.Terminal
 import dev.mmauro.malverio.CityColor
+import dev.mmauro.malverio.Game
 import dev.mmauro.malverio.PlayerCard
 import dev.mmauro.malverio.PlayerCard.CityCard
 import dev.mmauro.malverio.PlayerCard.EpidemicCard
@@ -9,16 +10,26 @@ import dev.mmauro.malverio.PlayerCard.EventCard
 import dev.mmauro.malverio.PlayerCard.ProduceSuppliesCard
 import dev.mmauro.malverio.Textable
 import dev.mmauro.malverio.Timeline
+import kotlin.math.min
 
 object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
 
-    override fun isAllowedMove(timeline: Timeline) = !timeline.currentGame.isDuringEpidemic()
+    override fun isAllowed(timeline: Timeline) = !timeline.currentGame.isDuringEpidemic()
 
     override val cardTypeName = "player"
 
-    override fun getDeck(timeline: Timeline) = timeline.currentGame.playerDeck
+    override fun getNumberOfCardsToDraw(timeline: Timeline) = min(2, timeline.currentGame.playerDeck.undrawn.size)
 
-    override fun getNumberOfCardsToDraw(timeline: Timeline) = 2
+    override fun Game.doRandomDraw(): RandomDrawResult<PlayerCard> {
+        val card = playerDeck.randomCardFromTop()
+        val game = drawPlayerCard(card)
+        val withEpidemicResolved = if (card is EpidemicCard) {
+            game.resolveEpidemicRandomly()
+        } else {
+            game
+        }
+        return RandomDrawResult(drawnCards = setOf(card), game = withEpidemicResolved)
+    }
 
     override fun Terminal.printSimulationResults(results: SimulationResults<PlayerCard>) {
         println("Probability of player cards:")

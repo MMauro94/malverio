@@ -6,13 +6,20 @@ const val DRAWN_PLAYER_CARDS_PER_TURN = 2
 
 @Serializable
 data class Game(
+    val forsakenCities: Set<City>,
     val playerDeck: Deck<PlayerCard>,
     val infectionDeck: Deck<InfectionCard>,
     val infectionMarker: InfectionMarker,
     val turn: Turn,
 ) {
 
-    constructor(players: List<String>, playerDeck: Deck<PlayerCard>, infectionDeck: Deck<InfectionCard>) : this(
+    constructor(
+        forsakenCities: Set<City>,
+        players: List<Player>,
+        playerDeck: Deck<PlayerCard>,
+        infectionDeck: Deck<InfectionCard>,
+    ) : this(
+        forsakenCities = forsakenCities,
         playerDeck = playerDeck,
         infectionDeck = infectionDeck,
         infectionMarker = InfectionMarker(),
@@ -44,12 +51,16 @@ data class Game(
 
     fun drawInfectionCard(card: InfectionCard): Game {
         requireNotInEpidemic()
-        return copy(
+        val game = copy(
             infectionDeck = infectionDeck.drawCardFromTop(card),
             turn = turn.copy(
                 drawnEpidemicCards = turn.drawnEpidemicCards + 1,
             )
         )
+        return when {
+            card.cityOrNull() in forsakenCities -> game.removeCard(card)
+            else -> game
+        }
     }
 
     fun increase(): Game {
@@ -80,6 +91,15 @@ data class Game(
             infectionDeck = infectionDeck.shuffleDrawnAndPlaceOnTop(),
             turn = turn.copy(epidemicStage = null),
         )
+    }
+
+    fun resolveEpidemicRandomly(): Game {
+        val withInfections = if (infectionDeck.undrawn.isEmpty()) {
+            shuffleInfectionDeck().increase()
+        } else {
+            this
+        }
+        return withInfections.increase().infect(withInfections.infectionDeck.randomCardFromBottom()).intensify()
     }
 
     fun shuffleInfectionDeck(): Game {

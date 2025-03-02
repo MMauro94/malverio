@@ -21,6 +21,6 @@ abstract class BaseMove : Move {
     }
 
     fun Game.doAction(details: String? = null, action: Game.() -> Game) : Timeline.Item {
-        return Timeline.Item(this.action(), description = "${cyan(turn.currentPlayer)}: $name ${details.orEmpty()}")
+        return Timeline.Item(this.action(), description = "${cyan(turn.currentPlayer.text())}: $name ${details.orEmpty()}")
     }
 }

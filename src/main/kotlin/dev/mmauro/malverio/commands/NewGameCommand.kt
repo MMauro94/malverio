@@ -2,6 +2,7 @@ package dev.mmauro.malverio.commands
 
 import com.github.ajalt.clikt.core.BadParameterValue
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.path
 import dev.mmauro.malverio.*
@@ -10,6 +11,7 @@ import dev.mmauro.malverio.PlayerCard.EventCard
 import dev.mmauro.malverio.PlayerCard.ProduceSuppliesCard
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.readText
+import kotlin.system.exitProcess
 
 private typealias InfectionDeck = Set<InfectionCard>
 private typealias PlayerDeck = Set<PlayerCard>
@@ -29,9 +31,14 @@ class NewGameCommand : CliktCommand(name = "new") {
         }
 
     private val savegame by option().path(canBeDir = false, canBeSymlink = false).required()
-    private val players by option().varargValues(min = 1).required().check("Players must be 2, 3 or 4") {
-        it.size in 2..4
-    }
+    private val players by option()
+        .convert { Player(it) }
+        .varargValues(min = 1)
+        .required()
+        .validate {
+            if (it.size !in 2..4) fail("Players must be 2, 3 or 4")
+            if (it.toSet().size != it.size) fail("Players must have different names")
+        }
 
     override fun run() {
         if (players.size != players.toSet().size) {
@@ -65,12 +72,32 @@ class NewGameCommand : CliktCommand(name = "new") {
         ).run()
     }
 
-    private fun setup(): Game {
-        val infectionDeck = Deck(infectionDeck).selectAndDraw(
+    private fun setupForsakenCities(): Set<City> {
+        val forsakenCities = infectionDeck
+            .filterIsInstance<InfectionCard.CityCard>()
+            .map { it.city }
+            .toSet()
+            .selectMultiple("Select fallen cities (0 population)")
+            ?: throw PrintMessage("You must select the forsaken cities")
+        return forsakenCities
+    }
+
+    private fun setupInfectionDeck(forsakenCities: Set<City>): Deck<InfectionCard> {
+        val (hollowMenCards, otherCards) = infectionDeck.partition { it is InfectionCard.HollowMenGather }
+
+        val deck = Deck(otherCards.toSet()).selectAndDraw(
             n = SETUP_INFECTION_CARDS,
-            text = "infection cards setup (step 4)"
+            text = "infection cards setup (step 4)",
+            ignore = { it.cityOrNull() in forsakenCities },
         )
 
+        return Deck(
+            partitions = deck.partitions,
+            drawn = hollowMenCards + deck.drawn.filterNot { it.cityOrNull() in forsakenCities },
+        )
+    }
+
+    private fun setupPlayerDeck(): Deck<PlayerCard> {
         val playerCardsToDraw = players.size * when (players.size) {
             2 -> 4
             3 -> 3
@@ -99,6 +126,25 @@ class NewGameCommand : CliktCommand(name = "new") {
             drawn = playerDeckNoEpidemics.drawn,
         )
 
-        return Game(players, playerDeck, infectionDeck)
+        return playerDeck
+    }
+
+    private fun setupPlayers(): List<Player> {
+        val first = players.select("Select the first player")
+        return players.dropWhile { it != first } + players.takeWhile { it != first }
+    }
+
+    private fun setup(): Game {
+        val forsakenCities = setupForsakenCities()
+
+        val infectionDeck = setupInfectionDeck(forsakenCities)
+        val playerDeck = setupPlayerDeck()
+
+        return Game(
+            forsakenCities = forsakenCities,
+            players = setupPlayers(),
+            playerDeck = playerDeck,
+            infectionDeck = infectionDeck,
+        )
     }
 }

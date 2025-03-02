@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Turn(
-    val players: List<String>,
+    val players: List<Player>,
     val turnNumber: Int,
     val drawnPlayerCards: Int,
     val drawnEpidemicCards: Int,

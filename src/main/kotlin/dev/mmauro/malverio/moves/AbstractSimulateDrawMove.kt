@@ -2,7 +2,7 @@ package dev.mmauro.malverio.moves
 
 import com.github.ajalt.mordant.terminal.Terminal
 import dev.mmauro.malverio.Card
-import dev.mmauro.malverio.Deck
+import dev.mmauro.malverio.Game
 import dev.mmauro.malverio.Textable
 import dev.mmauro.malverio.Timeline
 import dev.mmauro.malverio.printSection
@@ -16,22 +16,20 @@ abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C : Com
 
     protected abstract val cardTypeName: String
 
-    protected abstract fun getDeck(timeline: Timeline): Deck<C>
-
     protected abstract fun getNumberOfCardsToDraw(timeline: Timeline): Int
 
-    protected abstract fun isAllowedMove(timeline: Timeline): Boolean
-
-    override fun isAllowed(timeline: Timeline): Boolean {
-        return getDeck(timeline).undrawn.size >= getNumberOfCardsToDraw(timeline) && isAllowedMove(timeline)
-    }
+    protected abstract fun Game.doRandomDraw(): RandomDrawResult<C>
 
     override val name get() = "Simulate $cardTypeName draw"
 
     override fun print(timeline: Timeline) {
         val cards = getNumberOfCardsToDraw(timeline)
         printSection("RUNNING SIMULATION FOR $cards CARDS") {
-            val simulationResults = getDeck(timeline).simulateDrawRandomCards(cards = cards, times = 10_000)
+            val simulationResults = simulateDrawRandomCards(
+                timeline = timeline,
+                cards = cards,
+                times = 10_000,
+            )
             printSimulationResults(simulationResults)
         }
     }
@@ -87,28 +85,31 @@ abstract class AbstractSimulateDrawMove<C> : PrintMove() where C : Card, C : Com
         forEach { it.print(terminal = terminal) }
     }
 
-    private fun Deck<C>.simulateDrawRandomCards(cards: Int, times: Int): SimulationResults<C> {
+    private fun simulateDrawRandomCards(timeline: Timeline, cards: Int, times: Int): SimulationResults<C> {
         return SimulationResults(
             buildList {
                 repeat(times) {
-                    add(simulateDrawRandomCards(cards))
+                    add(simulateDrawRandomCards(timeline, cards))
                 }
             },
         )
     }
 
-    private fun Deck<C>.simulateDrawRandomCards(cards: Int): Set<C> {
-        var deck = this
+    private fun simulateDrawRandomCards(timeline: Timeline, cards: Int): Set<C> {
+        var game = timeline.currentGame
         return buildSet {
             repeat(cards) {
-                val partition = deck.partitions.first()
-                val data = partition.data.flatMap { d -> List(d.size) { d } }
-                val card = data.random().cards.random()
-                add(card)
-                deck = deck.drawCardFromTop(card)
+                val (drawnCards, nextGame) = game.doRandomDraw()
+                addAll(drawnCards)
+                game = nextGame
             }
         }
     }
+
+    protected data class RandomDrawResult<C: Card>(
+        val drawnCards: Set<C>,
+        val game: Game,
+    )
 
     protected data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
 

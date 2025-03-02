@@ -18,6 +18,7 @@ private val MOVES = listOf(
     SimulateInfectionDraw,
     SimulatePlayerDraw,
     ShuffleInfectionDeck,
+    AddForsakenCity,
     PrintInfectionPartitions,
     PrintTimeline,
     PrintDiscards,
@@ -35,7 +36,7 @@ class GameLoop(
         timeline.save(savegame)
 
         while (true) {
-            TERMINAL.println("Current player turn: ${cyan(timeline.currentGame.turn.currentPlayer)}")
+            TERMINAL.println("Current player turn: ${cyan(timeline.currentGame.turn.currentPlayer.text())}")
             TERMINAL.println("Turns left (this one included): ${cyan(timeline.currentGame.turnsLeft().toString())}")
             val moves = MOVES.filter { it.isAllowed(timeline) }
             val selection = TERMINAL.interactiveSelectList(
