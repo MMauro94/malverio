@@ -91,9 +91,11 @@ class NewGameCommand : CliktCommand(name = "new") {
             ignore = { it.cityOrNull() in forsakenCities },
         )
 
+        val (drawnForsaken, drawnNormal) = deck.drawn.partition { it.cityOrNull() in forsakenCities }
         return Deck(
             partitions = deck.partitions,
-            drawn = hollowMenCards + deck.drawn.filterNot { it.cityOrNull() in forsakenCities },
+            drawn = hollowMenCards + drawnNormal,
+            removed = drawnForsaken,
         )
     }
 
@@ -124,6 +126,7 @@ class NewGameCommand : CliktCommand(name = "new") {
                 )
             },
             drawn = playerDeckNoEpidemics.drawn,
+            removed = emptyList(),
         )
 
         return playerDeck

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class Deck<C : Card>(
     val partitions: List<Partition<C>>,
     val drawn: List<C>,
+    val removed: List<C> = emptyList(),
 ) {
 
     val undrawn = partitions.flatMap { it.cards }.toSet()
@@ -24,13 +25,14 @@ data class Deck<C : Card>(
     constructor(cards: Set<C>) : this(
         partitions = listOf(cards.asPartition()),
         drawn = emptyList(),
+        removed = emptyList(),
     )
 
-    fun randomCardFromTop() : C {
+    fun randomCardFromTop(): C {
         return partitions.first().randomCard()
     }
 
-    fun randomCardFromBottom() : C {
+    fun randomCardFromBottom(): C {
         return partitions.last().randomCard()
     }
 
@@ -38,7 +40,9 @@ data class Deck<C : Card>(
         require(card in partitions.first()) { "$card is not in top of deck (${partitions.first()})" }
         return Deck(
             drawn = drawn + card,
-            partitions = listOfNotNull(partitions.first().drawCard(card)) + partitions.drop(1).mapNotNull { it.removeCard(card) }
+            partitions = listOfNotNull(partitions.first().drawCard(card)) + partitions.drop(1)
+                .mapNotNull { it.removeCard(card) },
+            removed = removed,
         )
     }
 
@@ -46,7 +50,10 @@ data class Deck<C : Card>(
         require(card in partitions.last()) { "$card is not in bottom of deck (${partitions.last()})" }
         return Deck(
             drawn = drawn + card,
-            partitions = partitions.dropLast(1).mapNotNull { it.removeCard(card) } + listOfNotNull(partitions.last().drawCard(card))
+            partitions = partitions.dropLast(1).mapNotNull { it.removeCard(card) } + listOfNotNull(
+                partitions.last().drawCard(card)
+            ),
+            removed = removed,
         )
     }
 
@@ -57,6 +64,7 @@ data class Deck<C : Card>(
         return Deck(
             drawn = emptyList(),
             partitions = listOf(drawn.toSet().asPartition()) + partitions,
+            removed = removed,
         )
     }
 
@@ -65,6 +73,7 @@ data class Deck<C : Card>(
         return Deck(
             drawn = drawn - card,
             partitions = partitions,
+            removed = removed + card,
         )
     }
 
@@ -73,6 +82,7 @@ data class Deck<C : Card>(
         return Deck(
             drawn = drawn - card,
             partitions = listOf(setOf(card).asPartition()) + partitions,
+            removed = removed,
         )
     }
 
@@ -114,7 +124,7 @@ data class Deck<C : Card>(
             }
         }
 
-        private fun mapData(mapper: (Data<C>)-> Data<C>?) : Partition<C>? {
+        private fun mapData(mapper: (Data<C>) -> Data<C>?): Partition<C>? {
             return data.mapNotNull { mapper(it) }.ifEmpty { null }?.let { Partition(it.toSet()) }
         }
 
