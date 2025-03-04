@@ -10,6 +10,9 @@ import dev.mmauro.malverio.PlayerCard.EventCard
 import dev.mmauro.malverio.PlayerCard.ProduceSuppliesCard
 import dev.mmauro.malverio.Textable
 import dev.mmauro.malverio.Timeline
+import dev.mmauro.malverio.simulation.Group
+import dev.mmauro.malverio.simulation.SimulationResults
+import dev.mmauro.malverio.simulation.print
 import kotlin.math.min
 
 object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
@@ -24,7 +27,7 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
         val card = playerDeck.randomCardFromTop()
         val game = drawPlayerCard(card)
         val withEpidemicResolved = if (card is EpidemicCard) {
-            game.resolveEpidemicRandomly()
+            game.resolveEpidemicRandomly().first
         } else {
             game
         }

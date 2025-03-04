@@ -1,13 +1,16 @@
 package dev.mmauro.malverio
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 @Serializable
-data class Turn(
+data class Turn @OptIn(ExperimentalSerializationApi::class) constructor(
     val players: List<Player>,
     val turnNumber: Int,
     val drawnPlayerCards: Int,
-    val drawnEpidemicCards: Int,
+    @JsonNames("drawn-epidemic-cards")
+    val drawnInfectionCards: Int,
     val epidemicStage: EpidemicStage?,
 ) {
 
@@ -16,10 +19,10 @@ data class Turn(
     init {
         require(turnNumber >= 0)
         require(drawnPlayerCards in 0..DRAWN_PLAYER_CARDS_PER_TURN)
-        require(drawnEpidemicCards >= 0)
+        require(drawnInfectionCards >= 0)
         if (epidemicStage != null) {
             require(drawnPlayerCards > 0) { "Cannot be in an epidemic stage if you haven't drawn any player card" }
-            require(drawnEpidemicCards == 0) { "Cannot be in an epidemic stage if you have started drawing epidemic cards" }
+            require(drawnInfectionCards == 0) { "Cannot be in an epidemic stage if you have started drawing infection cards" }
         }
     }
 

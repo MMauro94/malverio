@@ -9,7 +9,7 @@ object DrawInfectionCard : BaseMove() {
     override val name = "Draw infection card"
 
     override fun isAllowed(game: Game): Boolean {
-        return !game.isDuringEpidemic() && game.turn.hasDrawnAllPlayerCards() && game.infectionDeck.undrawn.isNotEmpty()
+        return !game.isDuringEpidemic() && game.turn.hasDrawnAllPlayerCards() && game.infectionDeck.undrawn.isNotEmpty() && !game.hasDrawnAllInfectionCards()
     }
 
     override fun perform(game: Game): Timeline.Item? {

@@ -27,7 +27,7 @@ data class Game(
             players = players,
             turnNumber = 0,
             drawnPlayerCards = 0,
-            drawnEpidemicCards = 0,
+            drawnInfectionCards = 0,
             epidemicStage = null,
         )
     )
@@ -54,8 +54,8 @@ data class Game(
         val game = copy(
             infectionDeck = infectionDeck.drawCardFromTop(card),
             turn = turn.copy(
-                drawnEpidemicCards = turn.drawnEpidemicCards + 1,
-            )
+                drawnInfectionCards = turn.drawnInfectionCards + 1,
+            ),
         )
         return when {
             card.cityOrNull() in forsakenCities -> game.removeCard(card)
@@ -93,13 +93,19 @@ data class Game(
         )
     }
 
-    fun resolveEpidemicRandomly(): Game {
-        val withInfections = if (infectionDeck.undrawn.isEmpty()) {
-            shuffleInfectionDeck().increase()
+    fun ensureHasInfectionCardsToDraw() : Game {
+        return if (infectionDeck.undrawn.isEmpty()) {
+            shuffleInfectionDeck()
         } else {
             this
         }
-        return withInfections.increase().infect(withInfections.infectionDeck.randomCardFromBottom()).intensify()
+    }
+
+    fun resolveEpidemicRandomly(): Pair<Game, InfectionCard> {
+        val withInfections = ensureHasInfectionCardsToDraw()
+        val infectionCard = withInfections.infectionDeck.randomCardFromBottom()
+        val infectedGame = withInfections.increase().infect(infectionCard).intensify()
+        return infectedGame.ensureHasInfectionCardsToDraw() to infectionCard
     }
 
     fun shuffleInfectionDeck(): Game {
@@ -130,7 +136,7 @@ data class Game(
             turn = turn.copy(
                 turnNumber = turn.turnNumber + 1,
                 drawnPlayerCards = 0,
-                drawnEpidemicCards = 0,
+                drawnInfectionCards = 0,
             )
         )
     }
@@ -140,6 +146,10 @@ data class Game(
     }
 
     fun isDuringEpidemic() = turn.epidemicStage != null
+
+    fun hasDrawnAllInfectionCards(): Boolean {
+        return turn.drawnInfectionCards >= infectionMarker.cards
+    }
 }
 
 private fun Game.requireNotInEpidemic() {

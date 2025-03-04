@@ -5,6 +5,9 @@ import dev.mmauro.malverio.Game
 import dev.mmauro.malverio.InfectionCard
 import dev.mmauro.malverio.Textable
 import dev.mmauro.malverio.Timeline
+import dev.mmauro.malverio.simulation.Group
+import dev.mmauro.malverio.simulation.SimulationResults
+import dev.mmauro.malverio.simulation.print
 
 object SimulateInfectionDraw : AbstractSimulateDrawMove<InfectionCard>() {
 
@@ -21,7 +24,7 @@ object SimulateInfectionDraw : AbstractSimulateDrawMove<InfectionCard>() {
         val drawnCards = buildSet {
             do {
                 if (game.infectionDeck.undrawn.isEmpty()) {
-                    game = game.shuffleInfectionDeck().increase()
+                    game = game.shuffleInfectionDeck()
                 }
                 val card = game.infectionDeck.randomCardFromTop()
                 add(card)
