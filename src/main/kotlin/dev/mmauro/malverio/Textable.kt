@@ -1,5 +1,6 @@
 package dev.mmauro.malverio
 
 interface Textable {
-    fun text(): String
+    fun text(): String = plainText()
+    fun plainText(): String
 }

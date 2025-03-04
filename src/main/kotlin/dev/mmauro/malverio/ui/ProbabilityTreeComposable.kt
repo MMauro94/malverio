@@ -1,6 +1,5 @@
 package dev.mmauro.malverio.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -22,23 +21,24 @@ import dev.mmauro.malverio.simulation.explore
 
 private sealed interface PlayerCardType : Textable {
     data object Epidemic : PlayerCardType {
-        override fun text() = "EPIDEMIC ☢️"
+        override fun plainText() = "EPIDEMIC ☢️"
     }
 
     data object Produce : PlayerCardType {
-        override fun text() = "Produce"
+        override fun plainText() = "Produce"
     }
 
     data object Event : PlayerCardType {
-        override fun text() = "Event"
+        override fun plainText() = "Event"
     }
 
     data class City(val color: CityColor) : PlayerCardType {
         override fun text() = color.text()
+        override fun plainText() = color.plainText()
     }
 
     data object PortableAntiviralLab : PlayerCardType {
-        override fun text() = "Portable antiviral lab"
+        override fun plainText() = "Portable antiviral lab"
     }
 }
 
@@ -53,11 +53,11 @@ private fun PlayerCard.toType() = when (this) {
 
 private sealed interface InfectionCardType : Textable {
     data object City : InfectionCardType {
-        override fun text() = "City 🏙️"
+        override fun plainText() = "City 🏙️"
     }
 
     data object HollowMenGather : InfectionCardType {
-        override fun text() = "Hollow men gather 🧟"
+        override fun plainText() = "Hollow men gather 🧟"
     }
 }
 
@@ -125,7 +125,7 @@ fun ProbabilityTreeComposable(modifier: Modifier, probabilityTrees: List<Probabi
             Text(buildString {
                 append("  ".repeat(indentation))
                 append(" - ")
-                append(node.group.item.text())
+                append(node.group.item.plainText())
                 append(": ")
                 append(node.probability.format())
                 val leafSize = node.leafSize()

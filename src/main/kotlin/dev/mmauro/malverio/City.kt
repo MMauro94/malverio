@@ -1,5 +1,6 @@
 package dev.mmauro.malverio
 
+import androidx.compose.ui.graphics.Color
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyle
 import kotlinx.serialization.Serializable
@@ -40,15 +41,17 @@ enum class City(val color: CityColor) : Textable {
     ;
 
     override fun text() = color.textStyle(name)
+    override fun plainText() = name
 }
 
 @Serializable
-enum class CityColor(val textStyle: TextStyle) : Textable {
-    YELLOW(TextColors.black on TextColors.yellow),
-    BLUE(TextColors.white on TextColors.blue),
-    BLACK(TextColors.black on TextColors.white),
-    RED(TextColors.black on TextColors.red),
+enum class CityColor(val textStyle: TextStyle, val color: Color) : Textable {
+    YELLOW(TextColors.black on TextColors.yellow, Color(0.8f, 0.7f, 0.2f)),
+    BLUE(TextColors.white on TextColors.blue, Color(0.2f, 0.2f, 0.8f)),
+    BLACK(TextColors.black on TextColors.white, Color(0.2f, 0.2f, 0.2f)),
+    RED(TextColors.black on TextColors.red, Color(0.8f, 0.2f, 0.2f)),
     ;
 
     override fun text() = textStyle(name)
+    override fun plainText() = name
 }

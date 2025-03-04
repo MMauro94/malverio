@@ -56,23 +56,24 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
 
     private sealed interface CardType : Textable {
         data object Epidemic : CardType {
-            override fun text() = "EPIDEMIC ☢️"
+            override fun plainText() = "EPIDEMIC ☢️"
         }
 
         data object Produce : CardType {
-            override fun text() = "Produce"
+            override fun plainText() = "Produce"
         }
 
         data object Event : CardType {
-            override fun text() = "Event"
+            override fun plainText() = "Event"
         }
 
         data class City(val color: CityColor) : CardType {
             override fun text() = color.text()
+            override fun plainText() = color.plainText()
         }
 
         data object PortableAntiviralLab : CardType {
-            override fun text() = "Portable antiviral lab"
+            override fun plainText() = "Portable antiviral lab"
         }
     }
 

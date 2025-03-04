@@ -27,7 +27,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
     data class EpidemicCard(
         override val id: Uuid = Uuid.random(),
     ) : PlayerCard() {
-        override fun text() = "EPIDEMIC ☢️"
+        override fun plainText() = "EPIDEMIC ☢️"
     }
 
     @Serializable
@@ -48,7 +48,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
 
         fun productions() = "$usedSystemWideProductions/$totalSystemWideProductions"
 
-        override fun text() = "Produce supplies (used system wide productions: ${productions()})"
+        override fun plainText() = "Produce supplies (used system wide productions: ${productions()})"
     }
 
     sealed class EventCard : PlayerCard() {
@@ -59,7 +59,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
             override val id: Uuid = Uuid.random(),
             val event: RationedEvent,
         ) : EventCard() {
-            override fun text() = "Rationed event (${event.name})"
+            override fun plainText() = "Rationed event (${event.name})"
         }
 
         @Serializable
@@ -68,7 +68,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
             override val id: Uuid = Uuid.random(),
             val event: UnrationedEvent,
         ) : EventCard() {
-            override fun text() = "Unrationed event (${event.name})"
+            override fun plainText() = "Unrationed event (${event.name})"
         }
     }
 
@@ -77,7 +77,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
     data class PortableAntiviralLabCard(
         override val id: Uuid = Uuid.random(),
     ): PlayerCard() {
-        override fun text() = "Portable antiviral lab"
+        override fun plainText() = "Portable antiviral lab"
     }
 
     @Serializable
@@ -108,7 +108,8 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
             }
         }
 
-        override fun text() = city.color.textStyle(toString())
+        override fun text() = city.color.textStyle(plainText())
+        override fun plainText() = toString()
 
         @Serializable
         enum class Improvement {

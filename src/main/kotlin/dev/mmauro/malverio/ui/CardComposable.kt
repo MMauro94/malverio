@@ -12,8 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mmauro.malverio.Card
+import dev.mmauro.malverio.InfectionCard
+import dev.mmauro.malverio.PlayerCard
 
 val CARD_BORDER_RADIUS = 16.dp
 
@@ -24,9 +27,23 @@ fun FaceUpCard(
 ) {
     CardContainer(
         modifier = modifier,
-        backgroundColor = Color.Black,
+        backgroundColor = when (card) {
+            is InfectionCard.CityCard -> card.city.color.color
+            is InfectionCard.HollowMenGather -> Color(0.3f, 0.3f, 0.3f)
+            is PlayerCard.CityCard -> card.city.color.color
+            is PlayerCard.EpidemicCard -> Color(0f, 0.8f, 0f)
+            is PlayerCard.EventCard -> Color(0.8f, 0.7f, 0f)
+            is PlayerCard.PortableAntiviralLabCard -> Color(0f, 0.4f, 0.8f)
+            is PlayerCard.ProduceSuppliesCard -> Color(0f, 0.1f, 0.4f)
+        },
+        border = BorderStroke(4.dp, Color.White),
     ) {
-        Text(card.text(), color = Color.White, style = MaterialTheme.typography.titleSmall)
+        Text(
+            card.plainText(),
+            color = Color.White,
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -34,8 +51,8 @@ enum class CardBack(
     val color: Color,
     val letter: Char,
 ) {
-    PLAYER(Color(0.2f, 0.2f, 0.8f), 'P'),
-    INFECTION(Color(0.8f, 0.2f, 0.2f), 'I'),
+    PLAYER(Color(0.1f, 0.3f, 0.1f), 'P'),
+    INFECTION(Color(0.3f, 0.1f, 0.1f), 'I'),
 }
 
 @Composable
@@ -46,6 +63,7 @@ fun FaceDownCard(
     CardContainer(
         modifier = modifier,
         backgroundColor = cardBack.color,
+        border = BorderStroke(8.dp, Color.Black),
     ) {
         Text(cardBack.letter.toString(), color = Color.White, style = MaterialTheme.typography.titleLarge)
     }
@@ -55,14 +73,14 @@ fun FaceDownCard(
 private fun CardContainer(
     modifier: Modifier = Modifier,
     backgroundColor: Color,
+    border: BorderStroke,
     content: @Composable () -> Unit,
 ) {
     Surface(
-        modifier
-            .aspectRatio(5f / 7f),
+        modifier.aspectRatio(5f / 7f),
         color = backgroundColor,
         shape = RoundedCornerShape(CARD_BORDER_RADIUS),
-        border = BorderStroke(4.dp, Color.White),
+        border = border,
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             content()

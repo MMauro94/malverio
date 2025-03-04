@@ -49,6 +49,7 @@ sealed interface InfectionCard : Card, Comparable<InfectionCard> {
         }
 
         override fun text() = city.color.textStyle(toString())
+        override fun plainText() = toString()
 
 
         enum class Mutation {
@@ -62,6 +63,6 @@ sealed interface InfectionCard : Card, Comparable<InfectionCard> {
     data class HollowMenGather(
         override val id: Uuid = Uuid.random(),
     ) : InfectionCard {
-        override fun text() = "Hollow Men Gather 🧟"
+        override fun plainText() = "Hollow Men Gather 🧟"
     }
 }

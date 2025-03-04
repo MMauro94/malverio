@@ -63,11 +63,11 @@ object SimulateInfectionDraw : AbstractSimulateDrawMove<InfectionCard>() {
 
     private sealed interface CardType : Textable {
         data object City : CardType {
-            override fun text() = "City 🏙️"
+            override fun plainText() = "City 🏙️"
         }
 
         data object HollowMenGather : CardType {
-            override fun text() = "Hollow men gather 🧟"
+            override fun plainText() = "Hollow men gather 🧟"
         }
     }
 
