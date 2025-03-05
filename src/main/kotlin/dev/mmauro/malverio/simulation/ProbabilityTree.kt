@@ -1,5 +1,6 @@
 package dev.mmauro.malverio.simulation
 
+import androidx.compose.ui.graphics.Color
 import com.github.ajalt.mordant.terminal.Terminal
 import dev.mmauro.malverio.Textable
 
@@ -33,6 +34,12 @@ data class ProbabilityTree(
                 }
             }
         }
+    }
+
+    fun color(): Color? {
+        val myColor = group.item.color()
+        if (myColor != null) return myColor
+        return subTrees.firstNotNullOfOrNull { it.color() }
     }
 }
 

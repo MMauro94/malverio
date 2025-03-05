@@ -1,11 +1,15 @@
 package dev.mmauro.malverio.simulation
 
 import dev.mmauro.malverio.Card
+import dev.mmauro.malverio.InfectionCard
+import dev.mmauro.malverio.PlayerCard
+import dev.mmauro.malverio.PlayerCard.CityCard
+import dev.mmauro.malverio.toType
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 
-private val PERCENT_FORMAT = DecimalFormat("##.##%", DecimalFormatSymbols.getInstance(Locale.ROOT))
+private val PERCENT_FORMAT = DecimalFormat("##.#########%", DecimalFormatSymbols.getInstance(Locale.ROOT))
 
 
 data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
@@ -53,6 +57,42 @@ data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
                 )
             }
     }
+}
+
+fun SimulationResults<PlayerCard>.playerProbabilityTree(): List<ProbabilityTree> {
+    return probabilityTree(
+        { Group(it.toType(), isRelevant = true) },
+        {
+            when (it) {
+                is CityCard -> Group(it.city, isRelevant = true)
+                else -> Group(it, isRelevant = true)
+            }
+        },
+        {
+            when (it) {
+                is CityCard -> Group(it, isRelevant = it.unsearched > 0 || it.improvement != null)
+                else -> null
+            }
+        },
+    )
+}
+
+fun SimulationResults<InfectionCard>.infectionProbabilityTree(): List<ProbabilityTree> {
+    return probabilityTree(
+        { Group(it.toType(), isRelevant = true) },
+        {
+            when (it) {
+                is InfectionCard.CityCard -> Group(it.city, isRelevant = true)
+                is InfectionCard.HollowMenGather -> Group(it, isRelevant = false)
+            }
+        },
+        {
+            when (it) {
+                is InfectionCard.CityCard -> Group(it, isRelevant = it.mutations.isNotEmpty())
+                is InfectionCard.HollowMenGather -> null
+            }
+        },
+    )
 }
 
 @JvmInline

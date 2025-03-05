@@ -1,138 +1,93 @@
 package dev.mmauro.malverio.ui
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import dev.mmauro.malverio.CityColor
-import dev.mmauro.malverio.InfectionCard
-import dev.mmauro.malverio.PlayerCard
-import dev.mmauro.malverio.PlayerCard.CityCard
-import dev.mmauro.malverio.PlayerCard.EpidemicCard
-import dev.mmauro.malverio.PlayerCard.EventCard
-import dev.mmauro.malverio.PlayerCard.ProduceSuppliesCard
-import dev.mmauro.malverio.Textable
-import dev.mmauro.malverio.simulation.Group
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import dev.mmauro.malverio.simulation.ProbabilityTree
-import dev.mmauro.malverio.simulation.SimulationResults
-import dev.mmauro.malverio.simulation.explore
 
-
-private sealed interface PlayerCardType : Textable {
-    data object Epidemic : PlayerCardType {
-        override fun plainText() = "EPIDEMIC ☢️"
+@Composable
+fun ProbabilityTreesComposable(probabilityTrees: List<ProbabilityTree>) {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        ProbabilityTreesComposable(probabilityTrees )
     }
-
-    data object Produce : PlayerCardType {
-        override fun plainText() = "Produce"
-    }
-
-    data object Event : PlayerCardType {
-        override fun plainText() = "Event"
-    }
-
-    data class City(val color: CityColor) : PlayerCardType {
-        override fun text() = color.text()
-        override fun plainText() = color.plainText()
-    }
-
-    data object PortableAntiviralLab : PlayerCardType {
-        override fun plainText() = "Portable antiviral lab"
-    }
-}
-
-private fun PlayerCard.toType() = when (this) {
-    is CityCard -> PlayerCardType.City(city.color)
-    is EpidemicCard -> PlayerCardType.Epidemic
-    is EventCard.RationedEventCard -> PlayerCardType.Event
-    is EventCard.UnrationedEventCard -> PlayerCardType.Event
-    is ProduceSuppliesCard -> PlayerCardType.Produce
-    is PlayerCard.PortableAntiviralLabCard -> PlayerCardType.PortableAntiviralLab
-}
-
-private sealed interface InfectionCardType : Textable {
-    data object City : InfectionCardType {
-        override fun plainText() = "City 🏙️"
-    }
-
-    data object HollowMenGather : InfectionCardType {
-        override fun plainText() = "Hollow men gather 🧟"
-    }
-}
-
-private fun InfectionCard.toType() = when (this) {
-    is InfectionCard.CityCard -> InfectionCardType.City
-    is InfectionCard.HollowMenGather -> InfectionCardType.HollowMenGather
 }
 
 @Composable
-fun PlayerCardsSimulationComposable(modifier: Modifier, cardSimulation: SimulationResults<PlayerCard>) {
-    ProbabilityTreeComposable(
-        modifier,
-        cardSimulation.probabilityTree(
-            { Group(it.toType(), isRelevant = true) },
-            {
-                when (it) {
-                    is CityCard -> Group(it.city, isRelevant = true)
-                    is EventCard -> Group(it, isRelevant = true)
-                    else -> null
-                }
-            },
-            {
-                when (it) {
-                    is CityCard -> Group(it, isRelevant = it.unsearched > 0 || it.improvement != null)
-                    else -> null
-                }
-            },
-        )
+private fun ColumnScope.ProbabilityTreesComposable(probabilityTrees: List<ProbabilityTree>, indentation: Int = 0) {
+    for (node in probabilityTrees) {
+        ProbabilityTreeComposable(node, indentation)
+    }
+}
+
+@Composable
+private fun ColumnScope.ProbabilityTreeComposable(
+    node: ProbabilityTree,
+    indentation: Int
+) {
+    if (node.subTrees.size == 1) {
+        ProbabilityTreesComposable(node.subTrees, indentation)
+        return
+    }
+    var expand by remember { mutableStateOf(false) }
+    PercentageBar(
+        Modifier.clickable {
+            expand = !expand
+        },
+        node.probability.value.toFloat(),
+        node.color() ?: MaterialTheme.colorScheme.surfaceVariant,
+        buildString {
+            append(node.group.item.plainText())
+            append(": ")
+            append(node.probability.format())
+            val leafSize = node.leafSize()
+            if (leafSize > 1) {
+                append(" (x$leafSize)")
+            }
+        },
+        textModifier = Modifier.padding(start = indentation * 4.dp)
     )
-}
-
-
-@Composable
-fun InfectionCardsSimulationComposable(modifier: Modifier, cardSimulation: SimulationResults<InfectionCard>) {
-    ProbabilityTreeComposable(
-        modifier,
-        cardSimulation.probabilityTree(
-            { Group(it.toType(), isRelevant = true) },
-            {
-                when (it) {
-                    is InfectionCard.CityCard -> Group(it.city, isRelevant = true)
-                    is InfectionCard.HollowMenGather -> Group(it, isRelevant = false)
-                }
-            },
-            {
-                when (it) {
-                    is InfectionCard.CityCard -> Group(it, isRelevant = it.mutations.isNotEmpty())
-                    is InfectionCard.HollowMenGather -> null
-                }
-            },
-        )
-    )
-}
-
-
-@Composable
-fun ProbabilityTreeComposable(modifier: Modifier, probabilityTrees: List<ProbabilityTree>) {
-    val nodes = buildList {
-        probabilityTrees.explore { indentation, node ->
-            add(indentation to node)
-        }
+    if (expand) {
+        ProbabilityTreesComposable(node.subTrees, indentation + 1)
     }
-    LazyColumn(modifier) {
-        items(nodes) { (indentation, node) ->
-            Text(buildString {
-                append("  ".repeat(indentation))
-                append(" - ")
-                append(node.group.item.plainText())
-                append(": ")
-                append(node.probability.format())
-                val leafSize = node.leafSize()
-                if (leafSize > 1) {
-                    append(" (x$leafSize)")
+}
+
+@Composable
+private fun PercentageBar(
+    modifier: Modifier,
+    percentage: Float,
+    color: Color,
+    text: String,
+    textModifier: Modifier = Modifier,
+) {
+    Surface(shape = MaterialTheme.shapes.medium) {
+        Box(
+            modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    drawRect(color, Offset.Zero, Size(this.size.width * percentage, this.size.height))
                 }
-            })
+        ) {
+            Text(text, modifier = textModifier.padding(8.dp), color = Color.White)
         }
     }
 }

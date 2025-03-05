@@ -15,8 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mmauro.malverio.Card
-import dev.mmauro.malverio.InfectionCard
-import dev.mmauro.malverio.PlayerCard
 
 val CARD_BORDER_RADIUS = 16.dp
 
@@ -27,15 +25,7 @@ fun FaceUpCard(
 ) {
     CardContainer(
         modifier = modifier,
-        backgroundColor = when (card) {
-            is InfectionCard.CityCard -> card.city.color.color
-            is InfectionCard.HollowMenGather -> Color(0.3f, 0.3f, 0.3f)
-            is PlayerCard.CityCard -> card.city.color.color
-            is PlayerCard.EpidemicCard -> Color(0f, 0.8f, 0f)
-            is PlayerCard.EventCard -> Color(0.8f, 0.7f, 0f)
-            is PlayerCard.PortableAntiviralLabCard -> Color(0f, 0.4f, 0.8f)
-            is PlayerCard.ProduceSuppliesCard -> Color(0f, 0.1f, 0.4f)
-        },
+        backgroundColor = card.color(),
         border = BorderStroke(4.dp, Color.White),
     ) {
         Text(

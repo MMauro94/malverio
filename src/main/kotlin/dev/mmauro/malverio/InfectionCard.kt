@@ -1,5 +1,6 @@
 package dev.mmauro.malverio
 
+import androidx.compose.ui.graphics.Color
 import dev.mmauro.malverio.InfectionCard.CityCard
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -50,7 +51,7 @@ sealed interface InfectionCard : Card, Comparable<InfectionCard> {
 
         override fun text() = city.color.textStyle(toString())
         override fun plainText() = toString()
-
+        override fun color() = city.color()
 
         enum class Mutation {
             WELL_STOCKED
@@ -64,5 +65,6 @@ sealed interface InfectionCard : Card, Comparable<InfectionCard> {
         override val id: Uuid = Uuid.random(),
     ) : InfectionCard {
         override fun plainText() = "Hollow Men Gather 🧟"
+        override fun color() = Color(0.3f, 0.3f, 0.3f)
     }
 }

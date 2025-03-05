@@ -13,7 +13,6 @@ import dev.mmauro.malverio.Timeline
 import dev.mmauro.malverio.simulation.Group
 import dev.mmauro.malverio.simulation.SimulationResults
 import dev.mmauro.malverio.simulation.print
-import kotlin.math.min
 
 object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
 
@@ -21,7 +20,11 @@ object SimulatePlayerDraw : AbstractSimulateDrawMove<PlayerCard>() {
 
     override val cardTypeName = "player"
 
-    override fun getNumberOfCardsToDraw(timeline: Timeline) = min(2, timeline.currentGame.playerDeck.undrawn.size)
+    override fun getNumberOfCardsToDraw(timeline: Timeline) =
+        minOf(
+            2 - timeline.currentGame.turn.drawnPlayerCards,
+            timeline.currentGame.playerDeck.undrawn.size,
+        )
 
     override fun Game.doRandomDraw(): RandomDrawResult<PlayerCard> {
         val card = playerDeck.randomCardFromTop()

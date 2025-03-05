@@ -1,5 +1,6 @@
 package dev.mmauro.malverio
 
+import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
@@ -28,6 +29,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
         override val id: Uuid = Uuid.random(),
     ) : PlayerCard() {
         override fun plainText() = "EPIDEMIC ☢️"
+        override fun color() = Color(0f, 0.8f, 0f)
     }
 
     @Serializable
@@ -47,11 +49,13 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
         }
 
         fun productions() = "$usedSystemWideProductions/$totalSystemWideProductions"
-
+        override fun color() = Color(0f, 0.1f, 0.4f)
         override fun plainText() = "Produce supplies (used system wide productions: ${productions()})"
     }
 
     sealed class EventCard : PlayerCard() {
+
+        override fun color() = Color(0.8f, 0.7f, 0f)
 
         @Serializable
         @SerialName("rationed-event")
@@ -76,8 +80,9 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
     @SerialName("portable-antiviral-lab")
     data class PortableAntiviralLabCard(
         override val id: Uuid = Uuid.random(),
-    ): PlayerCard() {
+    ) : PlayerCard() {
         override fun plainText() = "Portable antiviral lab"
+        override fun color() = Color(0f, 0.4f, 0.8f)
     }
 
     @Serializable
@@ -110,6 +115,7 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
 
         override fun text() = city.color.textStyle(plainText())
         override fun plainText() = toString()
+        override fun color() = city.color()
 
         @Serializable
         enum class Improvement {

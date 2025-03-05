@@ -32,8 +32,8 @@ object GameSimulatron1000 {
     fun simulateRandomMove(game: Game): SimulationResult {
         val simulation = SimulationBuilder(game)
         do {
-            val isDone = simulateRandomMove(simulation)
-        } while (!isDone)
+            val hasMoreMoves = simulateRandomMove(simulation)
+        } while (hasMoreMoves)
         return SimulationResult(
             simulation.game,
             simulation.drawnPlayerCards,

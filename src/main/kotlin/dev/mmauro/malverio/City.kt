@@ -42,6 +42,7 @@ enum class City(val color: CityColor) : Textable {
 
     override fun text() = color.textStyle(name)
     override fun plainText() = name
+    override fun color() = color.color
 }
 
 @Serializable
@@ -54,4 +55,5 @@ enum class CityColor(val textStyle: TextStyle, val color: Color) : Textable {
 
     override fun text() = textStyle(name)
     override fun plainText() = name
+    override fun color() = color
 }

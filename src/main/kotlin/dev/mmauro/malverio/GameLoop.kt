@@ -54,6 +54,8 @@ class GameLoop(
             currentGame.value = timeline.currentGame
             TERMINAL.println("Current player turn: ${cyan(timeline.currentGame.turn.currentPlayer.text())}")
             TERMINAL.println("Turns left (this one included): ${cyan(timeline.currentGame.turnsLeft().toString())}")
+            TERMINAL.println("Player cards drawn: ${timeline.currentGame.turn.drawnPlayerCards}")
+            TERMINAL.println("Infection cards drawn: ${timeline.currentGame.turn.drawnInfectionCards}")
             val moves = MOVES.filter { it.isAllowed(timeline) }
             val selection = TERMINAL.interactiveSelectList(
                 moves.map { it.name },
