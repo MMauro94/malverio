@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.ajalt.mordant.rendering.TextColors.cyan
 import dev.mmauro.malverio.Game
 import dev.mmauro.malverio.simulation.GameSimulatron1000
 import dev.mmauro.malverio.simulation.INFECTION_CARD_DIMENSIONS
@@ -92,7 +91,7 @@ fun GameComposable(game: Game) {
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            "Turns left (this one included): ${cyan(game.turnsLeft().toString())}\n" +
+            "Turns left (this one included): ${game.turnsLeft()}\n" +
                 "Player cards drawn: ${game.turn.drawnPlayerCards}\n" +
                 "Infection cards drawn: ${game.turn.drawnInfectionCards}",
             Modifier.padding(8.dp),
