@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import dev.mmauro.malverio.simulation.ProbabilityTree
 
 @Composable
-fun ProbabilityTreesComposable(probabilityTrees: List<ProbabilityTree>) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+fun ProbabilityTreesComposable(modifier: Modifier, probabilityTrees: List<ProbabilityTree>) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         ProbabilityTreesComposable(probabilityTrees)
     }
 }

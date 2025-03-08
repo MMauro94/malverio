@@ -14,8 +14,8 @@ data class Deck<C : Card>(
     val size = deck.size
 
     init {
-        for (partition in partitions) {
-            require(drawn.intersect(partition.cards).isEmpty()) { "Intersection found between drawn and one partition" }
+        require(drawn.all { c -> partitions.none { p -> c in p } }){
+            "Intersection found between drawn and one partition"
         }
         require(deck.size == partitions.sumOf { it.size } + drawn.size) {
             "partitions sizes (${partitions.sumOf { it.size }}) + drawn (${drawn.size}) must match deck size (${deck.size})"
