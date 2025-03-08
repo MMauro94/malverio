@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mmauro.malverio.Game
 import dev.mmauro.malverio.simulation.GameSimulatron1000
@@ -97,6 +98,20 @@ fun GameComposable(game: Game) {
             Modifier.padding(8.dp),
             style = MaterialTheme.typography.bodyLarge,
         )
+        Row(Modifier.padding(8.dp).padding(top = 8.dp)) {
+            Text(
+                "Player draw simulation",
+                Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                "Infection draw simulation",
+                Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         Row(Modifier.weight(1f).padding(8.dp)) {
             when (simulation) {
                 SimulationState.DuringEpidemic -> Text(
