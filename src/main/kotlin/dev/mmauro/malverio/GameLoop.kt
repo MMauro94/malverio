@@ -27,8 +27,6 @@ private val MOVES = listOf(
     RemoveInfectionCard,
     Forecast,
     NextTurn,
-    SimulateInfectionDraw,
-    SimulatePlayerDraw,
     ShuffleInfectionDeck,
     AddForsakenCity,
     PrintInfectionPartitions,

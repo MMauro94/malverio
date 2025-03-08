@@ -10,23 +10,27 @@ object GameSimulatron1000 {
     private class SimulationBuilder(
         var game: Game,
         val drawnPlayerCards: MutableSet<PlayerCard> = HashSet(),
-        val drawnInfectionCards: MutableSet<InfectionCard> = HashSet(),
-    ) {
+        val drawnInfectionCards: MutableSet<ZombieOrInfect> = HashSet(),
+
+        ) {
         fun addPlayerCard(game: Game, card: PlayerCard) {
             this.game = game
             drawnPlayerCards.add(card)
         }
 
-        fun addInfectionCard(game: Game, card: InfectionCard) {
-            this.game = game
-            drawnInfectionCards.add(card)
+        fun infectCity(card: InfectionCard.CityCard) {
+            drawnInfectionCards.add(ZombieOrInfect.Infect(card))
+        }
+
+        fun zombieCity(card: InfectionCard.CityCard) {
+            drawnInfectionCards.add(ZombieOrInfect.Zombie(card))
         }
     }
 
     data class SimulationResult(
         val game: Game,
         val drawnPlayerCards: Set<PlayerCard>,
-        val drawnInfectionCards: Set<InfectionCard>,
+        val drawnInfectionCards: Set<ZombieOrInfect>,
     )
 
     fun simulateRandomMove(game: Game): SimulationResult {
@@ -59,23 +63,49 @@ object GameSimulatron1000 {
         simulation.addPlayerCard(g1, card)
 
         if (card is EpidemicCard) {
-            val (g2, infectionCard) = g1.resolveEpidemicRandomly()
-            simulation.addInfectionCard(g2, infectionCard)
+            simulation.game = g1.increase()
+            infect(simulation) {
+                val c = it.game.infectionDeck.randomCardFromBottom()
+                it.game = it.game.infect(c)
+                c
+            }
+            simulation.game = simulation.game.intensify()
         }
         return true
     }
 
     private fun simulateInfectionDraw(simulation: SimulationBuilder): Boolean {
-        do {
-            simulation.game = simulation.game.ensureHasInfectionCardsToDraw()
-            val card = simulation.game.infectionDeck.randomCardFromTop()
-            simulation.addInfectionCard(simulation.game.drawInfectionCard(card), card)
-            simulation.game = simulation.game.ensureHasInfectionCardsToDraw()
-        } while (card.shouldIgnore(simulation.game))
+        infect(simulation) {
+            val c = it.game.infectionDeck.randomCardFromTop()
+            it.game = it.game.drawInfectionCard(c)
+            c
+        }
         return true
     }
 
-    private fun InfectionCard.shouldIgnore(game: Game): Boolean {
-        return this is InfectionCard.HollowMenGather || cityOrNull() in game.forsakenCities
+    private fun infect(simulation: SimulationBuilder, extract: (SimulationBuilder) -> InfectionCard) {
+        var isInfecting = true
+        while (true) {
+            simulation.game = simulation.game.ensureHasInfectionCardsToDraw()
+            val card = extract(simulation)
+            simulation.game = simulation.game.ensureHasInfectionCardsToDraw()
+            when (card) {
+                is InfectionCard.HollowMenGather -> {
+                    isInfecting = false
+                }
+
+                is InfectionCard.CityCard -> {
+                    if (card.city in simulation.game.forsakenCities) {
+                        simulation.game.removeCard(card)
+                    } else if (isInfecting) {
+                        simulation.infectCity(card)
+                        break
+                    } else {
+                        simulation.zombieCity(card)
+                        break
+                    }
+                }
+            }
+        }
     }
 }

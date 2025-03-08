@@ -1,9 +1,11 @@
 package dev.mmauro.malverio.simulation
 
-import dev.mmauro.malverio.Card
+import androidx.compose.ui.graphics.Color
+import dev.mmauro.malverio.City
 import dev.mmauro.malverio.InfectionCard
 import dev.mmauro.malverio.PlayerCard
 import dev.mmauro.malverio.PlayerCard.CityCard
+import dev.mmauro.malverio.Textable
 import dev.mmauro.malverio.toType
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -12,7 +14,7 @@ import java.util.*
 private val PERCENT_FORMAT = DecimalFormat("##.#########%", DecimalFormatSymbols.getInstance(Locale.ROOT))
 
 
-data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
+data class SimulationResults<C>(val simulations: List<Set<C>>) {
 
     fun <T> probabilitiesBy(group: (C) -> T): Map<T, Probability> {
         return simulations
@@ -23,11 +25,11 @@ data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
             .mapValues { Probability(it.value / simulations.size.toDouble()) }
     }
 
-    fun probabilityTree(vararg groups: (C) -> Group?): List<ProbabilityTree> {
+    fun probabilityTree(vararg groups: (C) -> Textable?): List<ProbabilityTree> {
         return probabilityTree(groups.asList())
     }
 
-    fun probabilityTree(groups: List<(C) -> Group?>): List<ProbabilityTree> {
+    fun probabilityTree(groups: List<(C) -> Textable?>): List<ProbabilityTree> {
         if (groups.isEmpty()) return emptyList()
 
         val primaryGroupLambda = groups.first()
@@ -35,18 +37,18 @@ data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
 
         return probabilities.entries
             .sortedByDescending { it.value }
-            .mapNotNull { (group, probability) ->
-                if (group == null) return@mapNotNull null
+            .mapNotNull { (item, probability) ->
+                if (item == null) return@mapNotNull null
 
                 ProbabilityTree(
-                    group = group,
+                    item = item,
                     probability = probability,
                     subTrees = probabilityTree(
                         groups
                             .drop(1)
                             .map { secondaryGroupLambda ->
                                 { card: C ->
-                                    if (primaryGroupLambda(card) == group) {
+                                    if (primaryGroupLambda(card) == item) {
                                         secondaryGroupLambda(card)
                                     } else {
                                         null
@@ -61,36 +63,32 @@ data class SimulationResults<C : Card>(val simulations: List<Set<C>>) {
 
 fun SimulationResults<PlayerCard>.playerProbabilityTree(): List<ProbabilityTree> {
     return probabilityTree(
-        { Group(it.toType(), isRelevant = true) },
+        { it.toType() },
         {
             when (it) {
-                is CityCard -> Group(it.city, isRelevant = true)
-                else -> Group(it, isRelevant = true)
+                is CityCard -> it.city
+                else -> it
             }
         },
         {
             when (it) {
-                is CityCard -> Group(it, isRelevant = it.unsearched > 0 || it.improvement != null)
+                is CityCard -> it
                 else -> null
             }
         },
     )
 }
 
-fun SimulationResults<InfectionCard>.infectionProbabilityTree(): List<ProbabilityTree> {
+fun SimulationResults<ZombieOrInfect>.infectionProbabilityTree(): List<ProbabilityTree> {
     return probabilityTree(
-        { Group(it.toType(), isRelevant = true) },
         {
             when (it) {
-                is InfectionCard.CityCard -> Group(it.city, isRelevant = true)
-                is InfectionCard.HollowMenGather -> Group(it, isRelevant = false)
+                is ZombieOrInfect.Infect -> InfectedCity(it.card.city)
+                is ZombieOrInfect.Zombie -> ZombiedCity(it.card.city)
             }
         },
         {
-            when (it) {
-                is InfectionCard.CityCard -> Group(it, isRelevant = it.mutations.isNotEmpty())
-                is InfectionCard.HollowMenGather -> null
-            }
+            it
         },
     )
 }
@@ -104,4 +102,28 @@ value class Probability(val value: Double) : Comparable<Probability> {
     fun format(): String = PERCENT_FORMAT.format(value)
 
     override fun compareTo(other: Probability) = value.compareTo(other.value)
+}
+
+data class ZombiedCity(val city: City) : Textable {
+    override fun plainText() = "\uD83E\uDDDF ${city.name}"
+    override fun color() = city.color()
+}
+
+data class InfectedCity(val city: City) : Textable {
+    override fun plainText() = "☣ ${city.name}"
+    override fun color() = city.color()
+}
+
+sealed interface ZombieOrInfect : Textable{
+    val card: InfectionCard.CityCard
+
+    data class Zombie(override val card: InfectionCard.CityCard) : ZombieOrInfect{
+        override fun plainText() = "\uD83E\uDDDF ${card.plainText()}"
+        override fun color() = card.color()
+
+    }
+    data class Infect(override val card: InfectionCard.CityCard) : ZombieOrInfect{
+        override fun plainText() = "☣ ${card.plainText()}"
+        override fun color() = card.color()
+    }
 }

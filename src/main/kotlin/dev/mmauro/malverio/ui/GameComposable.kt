@@ -16,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.mmauro.malverio.Game
-import dev.mmauro.malverio.InfectionCard
 import dev.mmauro.malverio.PlayerCard
 import dev.mmauro.malverio.simulation.GameSimulatron1000
 import dev.mmauro.malverio.simulation.ProbabilityTree
 import dev.mmauro.malverio.simulation.SimulationResults
+import dev.mmauro.malverio.simulation.ZombieOrInfect
 import dev.mmauro.malverio.simulation.infectionProbabilityTree
 import dev.mmauro.malverio.simulation.playerProbabilityTree
 import kotlinx.coroutines.Dispatchers
@@ -60,11 +60,11 @@ fun GameComposable(game: Game) {
                     }
                 }
                 val partialResults = Channel<Pair<
-                    List<Set<PlayerCard>>, List<Set<InfectionCard>>
+                    List<Set<PlayerCard>>, List<Set<ZombieOrInfect>>
                     >>(capacity = Channel.CONFLATED)
                 launch(Dispatchers.Default) {
                     val playerCardSimulatedDraws = mutableListOf<Set<PlayerCard>>()
-                    val infectionCardSimulatedDraws = mutableListOf<Set<InfectionCard>>()
+                    val infectionCardSimulatedDraws = mutableListOf<Set<ZombieOrInfect>>()
                     suspend fun send() {
                         partialResults.send(
                             playerCardSimulatedDraws.toList() to infectionCardSimulatedDraws.toList()

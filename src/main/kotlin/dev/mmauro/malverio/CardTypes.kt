@@ -37,18 +37,3 @@ fun PlayerCard.toType() = when (this) {
     is ProduceSuppliesCard -> PlayerCardType.Produce
     is PlayerCard.PortableAntiviralLabCard -> PlayerCardType.PortableAntiviralLab
 }
-
-sealed interface InfectionCardType : Textable {
-    data object City : InfectionCardType {
-        override fun plainText() = "City 🏙️"
-    }
-
-    data object HollowMenGather : InfectionCardType {
-        override fun plainText() = "Hollow men gather 🧟"
-    }
-}
-
-fun InfectionCard.toType() = when (this) {
-    is InfectionCard.CityCard -> InfectionCardType.City
-    is InfectionCard.HollowMenGather -> InfectionCardType.HollowMenGather
-}

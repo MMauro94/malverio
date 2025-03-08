@@ -22,41 +22,39 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import dev.mmauro.malverio.simulation.ProbabilityTree
 
 @Composable
 fun ProbabilityTreesComposable(probabilityTrees: List<ProbabilityTree>) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        ProbabilityTreesComposable(probabilityTrees )
+        ProbabilityTreesComposable(probabilityTrees)
     }
 }
 
 @Composable
-private fun ColumnScope.ProbabilityTreesComposable(probabilityTrees: List<ProbabilityTree>, indentation: Int = 0) {
+private fun ColumnScope.ProbabilityTreesComposable(probabilityTrees: List<ProbabilityTree>) {
     for (node in probabilityTrees) {
-        ProbabilityTreeComposable(node, indentation)
+        ProbabilityTreeComposable(node)
     }
 }
 
 @Composable
 private fun ColumnScope.ProbabilityTreeComposable(
     node: ProbabilityTree,
-    indentation: Int
 ) {
     if (node.subTrees.size == 1) {
-        ProbabilityTreesComposable(node.subTrees, indentation)
+        ProbabilityTreesComposable(node.subTrees)
         return
     }
     var expand by remember { mutableStateOf(false) }
     PercentageBar(
-        Modifier.clickable {
+        Modifier.clickable(enabled = node.subTrees.isNotEmpty()) {
             expand = !expand
         },
         node.probability.value.toFloat(),
         node.color() ?: MaterialTheme.colorScheme.surfaceVariant,
         buildString {
-            append(node.group.item.plainText())
+            append(node.item.plainText())
             append(": ")
             append(node.probability.format())
             val leafSize = node.leafSize()
@@ -64,10 +62,11 @@ private fun ColumnScope.ProbabilityTreeComposable(
                 append(" (x$leafSize)")
             }
         },
-        textModifier = Modifier.padding(start = indentation * 4.dp)
     )
-    if (expand) {
-        ProbabilityTreesComposable(node.subTrees, indentation + 1)
+    if (expand && node.subTrees.isNotEmpty()) {
+        Column(Modifier.padding(4.dp)) {
+            ProbabilityTreesComposable(node.subTrees)
+        }
     }
 }
 

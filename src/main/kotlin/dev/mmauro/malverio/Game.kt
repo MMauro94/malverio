@@ -77,9 +77,14 @@ data class Game(
         require(turn.epidemicStage == Turn.EpidemicStage.INFECT) {
             "Intensify can only be performed after increase step"
         }
+        val nextStage = if (card is InfectionCard.HollowMenGather || card.cityOrNull() in forsakenCities) {
+            Turn.EpidemicStage.INFECT
+        } else {
+            Turn.EpidemicStage.INTENSIFY
+        }
         return copy(
             infectionDeck = infectionDeck.drawCardFromBottom(card),
-            turn = turn.copy(epidemicStage = Turn.EpidemicStage.INTENSIFY),
+            turn = turn.copy(epidemicStage = nextStage),
         )
     }
 
@@ -93,19 +98,12 @@ data class Game(
         )
     }
 
-    fun ensureHasInfectionCardsToDraw() : Game {
+    fun ensureHasInfectionCardsToDraw(): Game {
         return if (infectionDeck.undrawn.isEmpty()) {
             shuffleInfectionDeck()
         } else {
             this
         }
-    }
-
-    fun resolveEpidemicRandomly(): Pair<Game, InfectionCard> {
-        val withInfections = ensureHasInfectionCardsToDraw()
-        val infectionCard = withInfections.infectionDeck.randomCardFromBottom()
-        val infectedGame = withInfections.increase().infect(infectionCard).intensify()
-        return infectedGame.ensureHasInfectionCardsToDraw() to infectionCard
     }
 
     fun shuffleInfectionDeck(): Game {
