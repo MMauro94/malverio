@@ -49,13 +49,23 @@ data class Game(
         )
     }
 
+    fun monitorPlayerCard(card: PlayerCard): Game {
+        requireNotInEpidemic()
+        return copy(playerDeck = playerDeck.drawCardFromTop(card))
+    }
+
     fun drawInfectionCard(card: InfectionCard): Game {
         requireNotInEpidemic()
+        val doNotIncrement = card.cityOrNull() in forsakenCities || card is InfectionCard.HollowMenGather
         val game = copy(
             infectionDeck = infectionDeck.drawCardFromTop(card),
-            turn = turn.copy(
-                drawnInfectionCards = turn.drawnInfectionCards + 1,
-            ),
+            turn = if (doNotIncrement) {
+                turn
+            } else {
+                turn.copy(
+                    drawnInfectionCards = turn.drawnInfectionCards + 1,
+                )
+            },
         )
         return when {
             card.cityOrNull() in forsakenCities -> game.removeCard(card)
@@ -117,6 +127,10 @@ data class Game(
     }
 
     fun removeCard(card: InfectionCard): Game {
+        return copy(infectionDeck = infectionDeck.removeCard(card))
+    }
+
+    fun removeCardFromDrawn(card: InfectionCard): Game {
         return copy(infectionDeck = infectionDeck.removeCardFromDrawn(card))
     }
 

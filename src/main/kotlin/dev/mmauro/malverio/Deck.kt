@@ -68,6 +68,14 @@ data class Deck<C : Card>(
         )
     }
 
+    fun removeCard(card: C): Deck<C> {
+        return Deck(
+            drawn = drawn - card,
+            partitions = partitions.mapNotNull { it.removeCard(card) },
+            removed = removed + card,
+        )
+    }
+
     fun removeCardFromDrawn(card: C): Deck<C> {
         require(card in drawn) { "$card is not in drawn cards ($drawn)" }
         return Deck(
