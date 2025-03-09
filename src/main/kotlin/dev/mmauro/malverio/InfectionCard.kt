@@ -54,7 +54,9 @@ sealed interface InfectionCard : Card, Comparable<InfectionCard> {
         override fun color() = city.color()
 
         enum class Mutation {
-            WELL_STOCKED
+            WELL_STOCKED,
+            REBIRTH,
+            BROKEN_LINK,
         }
     }
 

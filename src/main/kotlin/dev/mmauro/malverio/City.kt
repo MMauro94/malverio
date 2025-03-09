@@ -21,6 +21,7 @@ enum class City(val color: CityColor) : Textable {
 
     BOGOTA(CityColor.YELLOW),
     BUENOS_AIRES(CityColor.YELLOW),
+    DAR_ES_SALAAM(CityColor.YELLOW),
     JACKSONVILLE(CityColor.YELLOW),
     KHARTOUM(CityColor.YELLOW),
     KINSHASA(CityColor.YELLOW),
@@ -34,11 +35,16 @@ enum class City(val color: CityColor) : Textable {
     ANTANANARIVO(CityColor.BLACK),
     BAGHDAD(CityColor.BLACK),
     CAIRO(CityColor.BLACK),
+    DELHI(CityColor.BLACK),
     ISTANBUL(CityColor.BLACK),
+    KOLKATA(CityColor.BLACK),
     MOSCOW(CityColor.BLACK),
     TEHRAN(CityColor.BLACK),
     TRIPOLI(CityColor.BLACK),
+    RIYADH(CityColor.BLACK),
+    NEW_MUMBAI(CityColor.BLACK),
 
+    JAKARTA(CityColor.RED),
     LAKE_BAIKAL(CityColor.RED),
     ;
 

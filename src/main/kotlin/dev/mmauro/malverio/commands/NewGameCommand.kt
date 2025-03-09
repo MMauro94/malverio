@@ -11,9 +11,9 @@ import dev.mmauro.malverio.PlayerCard.EventCard
 import dev.mmauro.malverio.PlayerCard.ProduceSuppliesCard
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.readText
-import kotlin.system.exitProcess
 
 private typealias InfectionDeck = Set<InfectionCard>
+private typealias NotInGame = Set<InfectionCard.CityCard>
 private typealias PlayerDeck = Set<PlayerCard>
 
 private const val SETUP_INFECTION_CARDS = 9
@@ -22,6 +22,9 @@ class NewGameCommand : CliktCommand(name = "new") {
 
     private val infectionDeck by option().path(mustExist = true)
         .convert { JSON.decodeFromString<InfectionDeck>(it.readText()) }
+        .required()
+    private val notInGame by option().path(mustExist = true)
+        .convert { JSON.decodeFromString<NotInGame>(it.readText()) }
         .required()
     private val playerDeck by option().path(mustExist = true)
         .convert { JSON.decodeFromString<PlayerDeck>(it.readText()) }
@@ -148,6 +151,7 @@ class NewGameCommand : CliktCommand(name = "new") {
             players = setupPlayers(),
             playerDeck = playerDeck,
             infectionDeck = infectionDeck,
+            notInGame = notInGame,
         )
     }
 }

@@ -27,6 +27,7 @@ private val MOVES = listOf(
     RemoveInfectionCard,
     Forecast,
     Monitor,
+    AddHollowMenGather,
     NextTurn,
     ShuffleInfectionDeck,
     AddForsakenCity,

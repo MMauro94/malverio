@@ -9,6 +9,7 @@ data class Game(
     val forsakenCities: Set<City>,
     val playerDeck: Deck<PlayerCard>,
     val infectionDeck: Deck<InfectionCard>,
+    val notInGame: Set<InfectionCard.CityCard>,
     val infectionMarker: InfectionMarker,
     val turn: Turn,
 ) {
@@ -18,10 +19,12 @@ data class Game(
         players: List<Player>,
         playerDeck: Deck<PlayerCard>,
         infectionDeck: Deck<InfectionCard>,
+        notInGame: Set<InfectionCard.CityCard>,
     ) : this(
         forsakenCities = forsakenCities,
         playerDeck = playerDeck,
         infectionDeck = infectionDeck,
+        notInGame = notInGame,
         infectionMarker = InfectionMarker(),
         turn = Turn(
             players = players,
@@ -87,14 +90,25 @@ data class Game(
         require(turn.epidemicStage == Turn.EpidemicStage.INFECT) {
             "Intensify can only be performed after increase step"
         }
-        val nextStage = if (card is InfectionCard.HollowMenGather || card.cityOrNull() in forsakenCities) {
-            Turn.EpidemicStage.INFECT
+        require(card in notInGame || card in infectionDeck.deck)
+
+        var nextTurn = turn
+        var id = infectionDeck
+        var nig = notInGame
+
+        if (card !is InfectionCard.HollowMenGather && card.cityOrNull() !in forsakenCities) {
+            nextTurn = turn.copy(epidemicStage = Turn.EpidemicStage.INTENSIFY)
+        }
+        if (card in infectionDeck.deck) {
+            id = infectionDeck.drawCardFromBottom(card)
         } else {
-            Turn.EpidemicStage.INTENSIFY
+            id = id.copy(drawn = id.drawn + card)
+            nig = notInGame.minus(card as InfectionCard.CityCard)
         }
         return copy(
-            infectionDeck = infectionDeck.drawCardFromBottom(card),
-            turn = turn.copy(epidemicStage = nextStage),
+            infectionDeck = id,
+            notInGame = nig,
+            turn = nextTurn,
         )
     }
 

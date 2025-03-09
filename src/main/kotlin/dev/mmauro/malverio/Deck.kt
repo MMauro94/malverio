@@ -14,7 +14,7 @@ data class Deck<C : Card>(
     val size = deck.size
 
     init {
-        require(drawn.all { c -> partitions.none { p -> c in p } }){
+        require(drawn.all { c -> partitions.none { p -> c in p } }) {
             "Intersection found between drawn and one partition"
         }
         require(deck.size == partitions.sumOf { it.size } + drawn.size) {
@@ -34,6 +34,19 @@ data class Deck<C : Card>(
 
     fun randomCardFromBottom(): C {
         return partitions.last().randomCard()
+    }
+
+    fun randomCard(): C {
+        return undrawn.random()
+    }
+
+    fun drawCard(card: C): Deck<C> {
+        require(card in undrawn) { "$card is not in the deck (${partitions.first()})" }
+        return Deck(
+            drawn = drawn + card,
+            partitions = partitions.mapNotNull { it.tryDrawCard(card) },
+            removed = removed,
+        )
     }
 
     fun drawCardFromTop(card: C): Deck<C> {
@@ -122,6 +135,10 @@ data class Deck<C : Card>(
 
         fun drawCard(card: C): Partition<C>? {
             require(card in this) { "cannot draw card $card from this partition" }
+            return tryDrawCard(card)
+        }
+
+        fun tryDrawCard(card: C): Partition<C>? {
             return mapData { it.tryDrawCard(card) }
         }
 

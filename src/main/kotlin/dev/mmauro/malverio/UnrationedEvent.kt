@@ -2,5 +2,6 @@ package dev.mmauro.malverio
 
 enum class UnrationedEvent {
     STRATEGIC_RESERVES,
-    RENEWAL
+    RENEWAL,
+    BIODOME_PROTOTYPE,
 }

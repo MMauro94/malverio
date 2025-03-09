@@ -1,5 +1,6 @@
 infection-deck.json
 player-deck.json
+not-in-game.json
 games/
 
 .gradle

@@ -65,9 +65,14 @@ object GameSimulatron1000 {
         if (card is EpidemicCard) {
             simulation.game = g1.increase()
             infect(simulation) {
-                val c = it.game.infectionDeck.randomCardFromBottom()
-                it.game = it.game.infect(c)
-                c
+                if (it.game.notInGame.isNotEmpty()) {
+                    // TODO: supprt early games
+                    val c = it.game.notInGame.random() // it.game.infectionDeck.randomCardFromBottom()
+                    it.game = it.game.infect(c)
+                    c
+                } else {
+                    null
+                }
             }
             simulation.game = simulation.game.intensify()
         }
@@ -83,7 +88,7 @@ object GameSimulatron1000 {
         return true
     }
 
-    private fun infect(simulation: SimulationBuilder, extract: (SimulationBuilder) -> InfectionCard) {
+    private fun infect(simulation: SimulationBuilder, extract: (SimulationBuilder) -> InfectionCard?) {
         var isInfecting = true
         while (true) {
             simulation.game = simulation.game.ensureHasInfectionCardsToDraw()
@@ -105,6 +110,8 @@ object GameSimulatron1000 {
                         break
                     }
                 }
+
+                null -> break
             }
         }
     }
