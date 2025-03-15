@@ -12,6 +12,8 @@ object RemoveInfectionCard : BaseMove() {
 
     override fun perform(game: Game): Timeline.Item? {
         val card = game.infectionDeck.drawn.select("Select card to remove") ?: return null
-        return Timeline.Item(game.removeCardFromDrawn(card), "$name ${card.text()}")
+        return game.doAction(card.text()){
+            game.removeCardFromDrawn(card)
+        }
     }
 }
