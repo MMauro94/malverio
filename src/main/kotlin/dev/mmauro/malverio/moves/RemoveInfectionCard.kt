@@ -6,7 +6,7 @@ import dev.mmauro.malverio.select
 
 object RemoveInfectionCard : BaseMove() {
 
-    override val name = "Remove infection card"
+    override fun name(game: Game) = "Remove infection card"
 
     override fun isAllowed(game: Game) = game.infectionDeck.drawn.isNotEmpty()
 

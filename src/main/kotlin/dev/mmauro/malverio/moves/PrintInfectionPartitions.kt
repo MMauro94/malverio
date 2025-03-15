@@ -7,7 +7,7 @@ import dev.mmauro.malverio.printSection
 
 object PrintInfectionPartitions : PrintMove() {
 
-    override val name = "Print infection partitions"
+    override fun name(timeline: Timeline) = "Print infection partitions"
 
     override fun print(timeline: Timeline) {
         printSection("INFECTION PARTITIONS") {

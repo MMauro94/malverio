@@ -8,7 +8,7 @@ import dev.mmauro.malverio.select
 
 object Forecast : BaseMove() {
 
-    override val name = "Forecast"
+    override fun name(game: Game) = "Forecast"
 
     override fun isAllowed(game: Game) = !game.isDuringEpidemic()
 

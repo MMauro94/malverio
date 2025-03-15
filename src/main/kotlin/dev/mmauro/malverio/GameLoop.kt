@@ -58,12 +58,12 @@ class GameLoop(
             TERMINAL.println("Infection cards drawn: ${timeline.currentGame.turn.drawnInfectionCards}")
             val moves = MOVES.filter { it.isAllowed(timeline) }
             val selection = TERMINAL.interactiveSelectList(
-                moves.map { it.name },
+                moves.map { it.name(timeline) },
                 title = "Select move",
             ) ?: exit()
 
             val lastGame = timeline.currentGame
-            timeline = moves.single { it.name == selection }.perform(timeline)
+            timeline = moves.single { it.name(timeline) == selection }.perform(timeline)
             timeline.save(savegame)
             if (lastGame !== timeline.currentGame) {
                 TERMINAL.println(timeline.games.last().description)

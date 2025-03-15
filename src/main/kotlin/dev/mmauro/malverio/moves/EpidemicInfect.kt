@@ -7,7 +7,7 @@ import dev.mmauro.malverio.select
 
 object EpidemicInfect : BaseMove() {
 
-    override val name = "Epidemic: Infect"
+    override fun name(game: Game) = "Epidemic: Infect"
 
     override fun isAllowed(game: Game) = game.turn.epidemicStage == Turn.EpidemicStage.INFECT
 

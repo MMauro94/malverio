@@ -4,7 +4,7 @@ import dev.mmauro.malverio.Timeline
 
 object Rollback : Move {
 
-    override val name = "Rollback"
+    override fun name(timeline: Timeline) = "Rollback"
 
     override fun isAllowed(timeline: Timeline) = timeline.games.size > 1
 

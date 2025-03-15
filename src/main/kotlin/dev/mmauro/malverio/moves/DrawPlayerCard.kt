@@ -6,7 +6,7 @@ import dev.mmauro.malverio.select
 
 object DrawPlayerCard : BaseMove() {
 
-    override val name = "Draw player card"
+    override fun name(game: Game) = "Draw player card"
 
     override fun isAllowed(game: Game) = !game.isDuringEpidemic() && !game.turn.hasDrawnAllPlayerCards()
 

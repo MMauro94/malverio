@@ -6,7 +6,7 @@ import dev.mmauro.malverio.select
 
 object AddForsakenCity : BaseMove() {
 
-    override val name = "Add forsaken city"
+    override fun name(game: Game) = "Add forsaken city"
 
     override fun isAllowed(game: Game) = true
 

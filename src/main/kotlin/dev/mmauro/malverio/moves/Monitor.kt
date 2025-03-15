@@ -8,7 +8,7 @@ import dev.mmauro.malverio.select
 
 object Monitor : BaseMove() {
 
-    override val name = "Monitor"
+    override fun name(game: Game) = "Monitor"
 
     override fun isAllowed(game: Game) = !game.isDuringEpidemic()
 

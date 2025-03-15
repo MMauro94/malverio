@@ -6,7 +6,7 @@ import dev.mmauro.malverio.Turn
 
 object EpidemicIntensify : BaseMove() {
 
-    override val name = "Epidemic: Intensify"
+    override fun name(game: Game) = "Epidemic: Intensify"
 
     override fun isAllowed(game: Game) = game.turn.epidemicStage == Turn.EpidemicStage.INTENSIFY
 

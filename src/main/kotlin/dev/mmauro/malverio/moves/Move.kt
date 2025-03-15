@@ -4,7 +4,7 @@ import dev.mmauro.malverio.Timeline
 
 interface Move {
 
-    val name: String
+    fun name(timeline: Timeline): String
 
     fun isAllowed(timeline: Timeline): Boolean
 

@@ -6,7 +6,7 @@ import dev.mmauro.malverio.printSection
 
 object PrintDiscards : PrintMove() {
 
-    override val name = "Print discards"
+    override fun name(timeline: Timeline) = "Print discards"
 
     override fun print(timeline: Timeline) {
         printSection("DISCARDS") {

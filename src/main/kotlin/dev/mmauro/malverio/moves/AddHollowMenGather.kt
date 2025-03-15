@@ -7,7 +7,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 object AddHollowMenGather : BaseMove() {
 
-    override val name = "Add Hollow Men Gather card to discard pile"
+    override fun name(game: Game) = "Add Hollow Men Gather card to discard pile"
 
     override fun isAllowed(game: Game) = !game.isDuringEpidemic()
 
