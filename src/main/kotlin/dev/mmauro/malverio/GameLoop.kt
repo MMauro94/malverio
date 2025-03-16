@@ -25,6 +25,7 @@ private val MOVES = listOf(
     EpidemicInfect,
     EpidemicIntensify,
     RemoveInfectionCard,
+    PutCardOutOfPlay,
     Forecast,
     Monitor,
     AddHollowMenGather,

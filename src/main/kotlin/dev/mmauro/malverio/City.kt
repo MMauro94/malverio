@@ -44,8 +44,16 @@ enum class City(val color: CityColor) : Textable {
     RIYADH(CityColor.BLACK),
     NEW_MUMBAI(CityColor.BLACK),
 
+    BANGKOK(CityColor.RED),
+    HONG_KONG(CityColor.RED),
+    HO_CHI_MINH_CITY(CityColor.RED),
     JAKARTA(CityColor.RED),
     LAKE_BAIKAL(CityColor.RED),
+    MANILA(CityColor.RED),
+    OSAKA(CityColor.RED),
+    SEOUL(CityColor.RED),
+    SHANGHAI(CityColor.RED),
+    TOKYO(CityColor.RED),
     ;
 
     override fun text() = color.textStyle(name)

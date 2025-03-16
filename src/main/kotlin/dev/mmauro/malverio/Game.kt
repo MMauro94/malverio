@@ -148,6 +148,13 @@ data class Game(
         return copy(infectionDeck = infectionDeck.removeCardFromDrawn(card))
     }
 
+    fun removeInfectionCardFromPlay(card: InfectionCard.CityCard): Game {
+        return copy(
+            infectionDeck = infectionDeck.removeCardFromDrawn(card),
+            notInGame = (notInGame + card).toSet(),
+        )
+    }
+
     fun moveToTopOfDeck(card: InfectionCard): Game {
         requireNotInEpidemic()
         return copy(infectionDeck = infectionDeck.moveFromDrawnToTopOfDeck(card))

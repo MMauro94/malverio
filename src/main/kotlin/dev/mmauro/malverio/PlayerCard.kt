@@ -124,6 +124,8 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
             COMPANION_ENGINEER,
             COMPANION_LOGISTICS_EXPERT,
             COMPANION_MESSENGER,
+            COMPANION_CONTAINMENT_SPECIALIST,
+            LOCAL_OPERATIVES,
         }
     }
 }
