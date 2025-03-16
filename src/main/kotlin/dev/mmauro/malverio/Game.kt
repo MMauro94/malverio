@@ -155,11 +155,6 @@ data class Game(
         )
     }
 
-    fun moveToTopOfDeck(card: InfectionCard): Game {
-        requireNotInEpidemic()
-        return copy(infectionDeck = infectionDeck.moveFromDrawnToTopOfDeck(card))
-    }
-
     fun nextTurn(): Game {
         requireNotInEpidemic()
         require(turn.drawnPlayerCards == DRAWN_PLAYER_CARDS_PER_TURN) {

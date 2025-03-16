@@ -119,12 +119,16 @@ sealed class PlayerCard : Card, Comparable<PlayerCard> {
 
         @Serializable
         enum class Improvement {
-            FOUNDATIONS,
-            INFRASTRUCTURE,
+            COMPANION_BUILDER,
+            COMPANION_CONTAINMENT_SPECIALIST,
             COMPANION_ENGINEER,
+            COMPANION_HERBALIST,
             COMPANION_LOGISTICS_EXPERT,
             COMPANION_MESSENGER,
-            COMPANION_CONTAINMENT_SPECIALIST,
+            COMPANION_STRUCTURAL_ENGINEER,
+            DECRYPTION_KEY,
+            FOUNDATIONS,
+            INFRASTRUCTURE,
             LOCAL_OPERATIVES,
         }
     }

@@ -19,12 +19,12 @@ object Forecast : BaseMove() {
         )
         val cardsCount = selection?.toInt()?.coerceAtMost(game.infectionDeck.undrawn.size) ?: return null
 
-        var nextGame = game
+        var nextInfectionDeck = game.infectionDeck
         val cards = List(cardsCount) {
-            val card = nextGame.infectionDeck.partitions.first().cards
+            val card = nextInfectionDeck.partitions.first().cards
                 .select("Select cards that you found (${it + 1}/$cardsCount):")
                 ?: return null
-            nextGame = nextGame.drawInfectionCard(card)
+            nextInfectionDeck = nextInfectionDeck.drawCardFromTop(card)
             card
         }.toMutableList()
 
@@ -34,9 +34,9 @@ object Forecast : BaseMove() {
             cards -= card
             card
         }
-        sortedCards.reversed().forEach { nextGame = nextGame.moveToTopOfDeck(it) }
+        sortedCards.reversed().forEach { nextInfectionDeck = nextInfectionDeck.moveFromDrawnToTopOfDeck(it) }
         return game.doAction("$cardsCount cards (new order: ${sortedCards.joinToString { it.text() }})") {
-            nextGame
+           copy(infectionDeck = nextInfectionDeck)
         }
     }
 }

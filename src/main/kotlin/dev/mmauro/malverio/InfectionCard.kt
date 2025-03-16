@@ -57,6 +57,7 @@ sealed interface InfectionCard : Card, Comparable<InfectionCard> {
             WELL_STOCKED,
             REBIRTH,
             BROKEN_LINK,
+            LOCKDOWN,
         }
     }
 
