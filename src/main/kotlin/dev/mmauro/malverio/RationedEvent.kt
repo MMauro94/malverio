@@ -2,6 +2,7 @@ package dev.mmauro.malverio
 
 enum class RationedEvent {
     AIRLIFT,
+    CAUTIOUS_APPROACH,
     DATA_TRANSFER,
     DISPERSAL,
     DRASTIC_MEASURES,
@@ -11,6 +12,7 @@ enum class RationedEvent {
     HIDDEN_STOCKPILE,
     INOCULATION_UNIT,
     IT_WORKED_THE_FIRST_TIME,
+    MOBILE_SHELTERS,
     ONE_QUIET_NIGHT,
     RESILIENT_POPULATION,
     TEAM_BRAVO,
